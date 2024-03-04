@@ -1,0 +1,34 @@
+.navbar{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: fixed;
+    width: 100%;
+    height: 60px;
+    background-color: #057A55;
+    border-bottom: 1px solid rgba(24, 24, 24, 0.103);
+    box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+  }
+
+.navbar a{
+    color: white;
+    font-weight: 600;
+    text-decoration: none;
+    margin-right: 20px;
+    margin-left: 6px;
+}
+
+.navbar img{
+    margin-left: 20px;
+    width: 200px;
+}
+
+.navuser{
+    display: flex;
+}
+
+.navuser svg {
+    cursor: pointer;
+    color: white;
+}
+

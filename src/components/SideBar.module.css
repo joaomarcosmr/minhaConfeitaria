@@ -1,0 +1,35 @@
+.sidebar{
+    background-color: #252F3F;
+    position: fixed;
+    width: 260px;
+    margin-top: 60px;
+    height: 100%;
+}
+
+.sidebar a{
+    color: white;
+    text-decoration: none;
+}
+
+.sidebar span{
+    font-size: 14px;
+    font-weight: 500;
+    margin-left: 20px;
+}
+
+.sidebar ul{
+    padding: 10px 0;
+}
+
+.sidebar li{
+    list-style: none;
+    padding: 14px 0;
+    transition: ease-in-out 0.3s;
+}
+
+.sidebar li:hover{
+    background-color:rgba(168, 168, 168, 0.185);
+    border-radius: 5px;
+    text-decoration: none;
+    padding: 17px 0;
+}

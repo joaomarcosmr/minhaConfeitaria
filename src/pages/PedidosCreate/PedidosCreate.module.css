@@ -1,0 +1,94 @@
+.criar_pedido{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    margin-left: 260px;
+    margin-top: 60px;
+}
+
+.criar_pedidos_head{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid #ddd;
+    padding: 10px;
+    margin-top: 30px;
+    width: 80%;
+    height: 50px;
+}
+
+.criar_pedido a{
+    text-decoration: none;
+    color: black;
+}
+
+.container{
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    height: auto;
+}
+
+.criar_pedido_section{
+    width: 80%;
+    margin-top: 40px;
+}
+
+.text_info{
+    margin-top: 6px;
+    width: 35%;
+}
+
+.text_info p{
+    margin-top: 5px;
+    font-weight: 300;
+    width: 65%;
+}
+
+.form{
+    padding: 25px;
+    background-color: #dddddd50;
+    border: 1px solid #dddddd57;;
+    border-radius: 8px;
+    width: 65%;
+}
+
+.input_form{
+    font-family: 'Montserrat', sans-serif;
+    width: 95%;
+    padding: 6px;
+    border-radius: 5px;
+    border: 1px solid rgba(190, 189, 189);
+    margin-top: 6px;
+    margin-bottom: 20px;
+}
+
+.table{
+    width: 100%;
+}
+
+.adicionar_pedido{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: auto;
+    margin-bottom: 1px;
+}
+
+.adicionar_pedido span{
+    margin-top: 30px;
+    margin-bottom: 10px;
+}
+
+.adicionar_pedido button{
+    cursor: pointer;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
+    padding: 5px;
+    width: 100%;
+    border-radius: 6px;
+    border: 1px dashed green;
+}
