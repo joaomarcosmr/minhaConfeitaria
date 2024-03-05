@@ -10,7 +10,7 @@ const PedidosCreate = () => {
     const [telefone, setTelefone] = useState('')
     const [email, setEmail] = useState('')
     const [descricao, setDescricao] = useState('')
-    const [quantidadeMassa, setQuantidadeMassa] = useState(0)
+    const [quantidadeMassa, setQuantidadeMassa] = useState([])
     const [quantidadeRecheio, setQuantidadeRecheio] = useState(0)
     const [quantidadeCobertura, setQuantidadeCobertura] = useState(0)
     const [ingredienteMassa, setIngredienteMassa] = useState([])
@@ -26,7 +26,7 @@ const PedidosCreate = () => {
     const { documents: produtos, loading, error } = useDocuments('produtos')
 
     const salvarProdutos = (e) => {
-        console.log(e.target.value)
+
     }
 
     const delProdutos = () => {
@@ -34,15 +34,17 @@ const PedidosCreate = () => {
     }
 
     const adicionarIngrediente = () => {
-        setIngredienteMassa([...ingredienteMassa, { produto: '', quantidade: quantidadeMassa }]);
+        setIngredienteMassa([...ingredienteMassa, {produto: '', quantidade: 0 }]);
         setQuantidadeMassa(0);
     };
 
-      const handleProduto = (produtoSelecionado, quantidade) => {
+      const handleProduto = (index, produtoSelecionado, quantidade) => {
+        console.log(produtoSelecionado)
         // toda vez que alterar ele vai passar por essa função, o objetivo vai ser que ele pegue os dados do objeto produto.produto armazene em uma variavel, falando o preço de custo e definindo o preço médio
-        console.log('Produto selecionado:', produtoSelecionado);
-        console.log('Quantidade:', quantidade);
-        // peguei o nome falta pegar os dados do objeto, (fazer um FOR?)
+        ingredienteMassa[index].produto = produtoSelecionado
+        ingredienteMassa[index].quantidade = quantidade
+        console.log(ingredienteMassa)
+        console.log(ingredienteMassa[index])
       };
 
     const handleSubmit = (e) => {
@@ -104,10 +106,12 @@ const PedidosCreate = () => {
                                 </tr>
                             </thead>
                             <tbody>
+                                {/* problemas aqui nessas linhas */}
+
                                 {ingredienteMassa.map((ingrediente, index) => (
                                 <tr key={index}>
                                     <td>
-                                        <select onChange={(e) => setProdutoSelecionado(index, e.target.value)}>
+                                        <select onChange={(e) => setItemSelecionado(index, e.target.value)}>
                                             {produtos && produtos.map((produto) => (
                                                 produto.uid === uid && (
                                                 <option key={produto.id} value={produto.produto}>{produto.produto}</option>
@@ -115,14 +119,16 @@ const PedidosCreate = () => {
                                         </select>
                                     </td>
                                     <td>
-                                        <input type="number" onChange={(e) => setQuantidade(index, e.target.value)}/>
+                                        <input type="number" onChange={(e) => setQuantidadeMassa(index, e.target.value)}/>
                                     </td>
                                     <td>
-                                        <button id='btn-save' onClick={() => handleProduto(ingredienteMassa[index].produtoSelecionado, ingredienteMassa[index].quantidade)}>Salvar</button>
+                                        {console.log(ingredienteMassa[index])}
+                                        <button id='btn-save' onClick={() => handleProduto(index, itemSelecionado, quantidadeMassa)}>Salvar</button>
                                         <button id='btn-del' onClick={() => delProdutos()}>Excluir</button>
                                     </td>
                                 </tr>
                                 ))}
+
                             </tbody>
                         </table>
                         <div className={style.adicionar_pedido}>
