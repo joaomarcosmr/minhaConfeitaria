@@ -1,5 +1,5 @@
 import React from 'react'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import style from './PedidosCreate.module.css'
 import { Link } from 'react-router-dom'
 import { useDocuments } from '../../hooks/useDocuments'
@@ -19,6 +19,7 @@ const PedidosCreate = () => {
     const [countMassa, setCountMassa] = useState(1)
     const [countRecheio, setCountRecheio] = useState(1)
     const [countCobertura, setCountCobertura] = useState(1)
+    const [itemSelecionado, setItemSelecionado] = useState([])
 
     const { user } = useAuthValue()
     const uid = user.uid
@@ -37,7 +38,8 @@ const PedidosCreate = () => {
         // toda vez que alterar ele vai passar por essa função, o objetivo vai ser que ele pegue os dados do objeto produto.produto armazene em uma variavel, falando o preço de custo e definindo o preço médio
             const novoTipoProduto = e.target.value;
             let itemSelecionado = produtos.filter((item) => (item.uid === uid && item.produto === novoTipoProduto));
-            setTipoProduto(itemSelecionado)
+            setItemSelecionado(itemSelecionado)
+            console.log(itemSelecionado)
         
         // peguei o nome falta pegar os dados do objeto, (fazer um FOR?)
       };
@@ -101,7 +103,23 @@ const PedidosCreate = () => {
                                 </tr>
                             </thead>
                             <tbody>
-                            {ingredienteMassa.map((ingrediente, index) => (
+                                <tr>
+                                    <td>
+                                        <select onChange={handleProduto}>
+                                            {produtos && produtos.map((produto) => (
+                                                produto.uid === uid && (
+                                                <option key={produto.id} value={produto.produto}>{produto.produto}</option>
+                                            )))}
+                                        </select>
+                                    </td>
+                                    <td>
+                                        <input type="number" onChange={(e) => setQuantidadeMassa(e.target.value)} />
+                                    </td>
+                                    <td>
+                                        <span>R$</span>
+                                    </td>
+                                </tr>
+                                {ingredienteMassa.map((ingrediente, index) => (
                                 <tr key={index}>
                                     <td>
                                         <select onChange={handleProduto}>
@@ -112,13 +130,13 @@ const PedidosCreate = () => {
                                         </select>
                                     </td>
                                     <td>
-                                        <input type="number" value={ingrediente.quantidade} onChange={(e) => setQuantidadeMassa(e.target.value)} />
+                                        <input type="number" onChange={(e) => setQuantidadeMassa(e.target.value)} />
                                     </td>
                                     <td>
-                                        <span>R$ {produtos.find(p => p.produto === ingrediente.produto)?.precoMedio}</span>
+                                        <span>R$ {itemSelecionado[0].preçoMedio}</span>
                                     </td>
                                 </tr>
-                            ))}
+                                ))}
                             </tbody>
                         </table>
                         <div className={style.adicionar_pedido}>
