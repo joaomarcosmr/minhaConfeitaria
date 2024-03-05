@@ -25,7 +25,11 @@ const PedidosCreate = () => {
     const uid = user.uid
     const { documents: produtos, loading, error } = useDocuments('produtos')
 
-    const salvarProdutos = () => {
+    const salvarProdutos = (e) => {
+        console.log(e.target.value)
+    }
+
+    const delProdutos = () => {
 
     }
 
@@ -34,13 +38,10 @@ const PedidosCreate = () => {
         setQuantidadeMassa(0);
     };
 
-      const handleProduto = (e) => {
+      const handleProduto = (produtoSelecionado, quantidade) => {
         // toda vez que alterar ele vai passar por essa função, o objetivo vai ser que ele pegue os dados do objeto produto.produto armazene em uma variavel, falando o preço de custo e definindo o preço médio
-            const novoTipoProduto = e.target.value;
-            let itemSelecionado = produtos.filter((item) => (item.uid === uid && item.produto === novoTipoProduto));
-            setItemSelecionado(itemSelecionado)
-            console.log(itemSelecionado)
-        
+        console.log('Produto selecionado:', produtoSelecionado);
+        console.log('Quantidade:', quantidade);
         // peguei o nome falta pegar os dados do objeto, (fazer um FOR?)
       };
 
@@ -99,30 +100,14 @@ const PedidosCreate = () => {
                                 <tr>
                                     <th>Produto Usado</th>
                                     <th>Peso Usado na Receita</th>
-                                    <th>Preço Médio</th>
+                                    <th>Ações</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td>
-                                        <select onChange={handleProduto}>
-                                            {produtos && produtos.map((produto) => (
-                                                produto.uid === uid && (
-                                                <option key={produto.id} value={produto.produto}>{produto.produto}</option>
-                                            )))}
-                                        </select>
-                                    </td>
-                                    <td>
-                                        <input type="number" onChange={(e) => setQuantidadeMassa(e.target.value)} />
-                                    </td>
-                                    <td>
-                                        <span>R$</span>
-                                    </td>
-                                </tr>
                                 {ingredienteMassa.map((ingrediente, index) => (
                                 <tr key={index}>
                                     <td>
-                                        <select onChange={handleProduto}>
+                                        <select onChange={(e) => setProdutoSelecionado(index, e.target.value)}>
                                             {produtos && produtos.map((produto) => (
                                                 produto.uid === uid && (
                                                 <option key={produto.id} value={produto.produto}>{produto.produto}</option>
@@ -130,17 +115,17 @@ const PedidosCreate = () => {
                                         </select>
                                     </td>
                                     <td>
-                                        <input type="number" onChange={(e) => setQuantidadeMassa(e.target.value)} />
+                                        <input type="number" onChange={(e) => setQuantidade(index, e.target.value)}/>
                                     </td>
                                     <td>
-                                        <span>R$ {itemSelecionado[0].preçoMedio}</span>
+                                        <button id='btn-save' onClick={() => handleProduto(ingredienteMassa[index].produtoSelecionado, ingredienteMassa[index].quantidade)}>Salvar</button>
+                                        <button id='btn-del' onClick={() => delProdutos()}>Excluir</button>
                                     </td>
                                 </tr>
                                 ))}
                             </tbody>
                         </table>
                         <div className={style.adicionar_pedido}>
-                            <button id='btn-save' onClick={() => salvarProdutos()}>Salvar</button>
                             <button onClick={() => adicionarIngrediente()}>Adicionar Ingrediente</button>
                         </div>
                     </form>

@@ -60,10 +60,18 @@ body{
 }
 
 #btn-save{
+  display: inline;
   background-color: rgb(67, 117, 67);
   border: 1px dashed black;
   color: white;
-  margin-top: 15px;
-  margin-bottom: 5px;
-  width: 100%;
+  width: 45%;
+}
+
+#btn-del{
+  display: inline;
+  margin-left: 5px;
+  background-color: rgb(128, 53, 53);
+  border: 1px dashed black;
+  color: white;
+  width: 45%;
 }
