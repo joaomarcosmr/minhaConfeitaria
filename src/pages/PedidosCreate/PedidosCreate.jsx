@@ -48,6 +48,8 @@ const PedidosCreate = () => {
         return uid === produto.uid && ingredienteMassa[index].produto === produto.produto
     })
 
+    // pesoEmbalagem, unidadeMedida
+
     // Fazer lógica de calculo pro insumo que achamos e bate com o insumo cadastrado!
     console.log(insumoCadastrado)
     };
