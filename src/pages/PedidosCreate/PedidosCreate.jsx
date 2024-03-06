@@ -9,8 +9,9 @@ const PedidosCreate = () => {
     const [nome, setNome] = useState('')
     const [telefone, setTelefone] = useState('')
     const [email, setEmail] = useState('')
+    const [itemSelecionado, setItemSelecionado] = useState('')
     const [descricao, setDescricao] = useState('')
-    const [quantidadeMassa, setQuantidadeMassa] = useState([])
+    const [quantidadeMassa, setQuantidadeMassa] = useState(0)
     const [quantidadeRecheio, setQuantidadeRecheio] = useState(0)
     const [quantidadeCobertura, setQuantidadeCobertura] = useState(0)
     const [ingredienteMassa, setIngredienteMassa] = useState([])
@@ -19,7 +20,6 @@ const PedidosCreate = () => {
     const [countMassa, setCountMassa] = useState(1)
     const [countRecheio, setCountRecheio] = useState(1)
     const [countCobertura, setCountCobertura] = useState(1)
-    const [itemSelecionado, setItemSelecionado] = useState([])
 
     const { user } = useAuthValue()
     const uid = user.uid
@@ -38,14 +38,19 @@ const PedidosCreate = () => {
         setQuantidadeMassa(0);
     };
 
-      const handleProduto = (index, produtoSelecionado, quantidade) => {
-        console.log(produtoSelecionado)
-        // toda vez que alterar ele vai passar por essa função, o objetivo vai ser que ele pegue os dados do objeto produto.produto armazene em uma variavel, falando o preço de custo e definindo o preço médio
-        ingredienteMassa[index].produto = produtoSelecionado
-        ingredienteMassa[index].quantidade = quantidade
-        console.log(ingredienteMassa)
-        console.log(ingredienteMassa[index])
-      };
+    const handleProduto = (index) => {
+    ingredienteMassa[index] = {
+        produto: itemSelecionado,
+        quantidade: quantidadeMassa,
+    }
+
+    const insumoCadastrado = produtos.find(produto => {
+        return uid === produto.uid && ingredienteMassa[index].produto === produto.produto
+    })
+
+    // Fazer lógica de calculo pro insumo que achamos e bate com o insumo cadastrado!
+    console.log(insumoCadastrado)
+    };
 
     const handleSubmit = (e) => {
         e.preventDefault()
@@ -111,7 +116,7 @@ const PedidosCreate = () => {
                                 {ingredienteMassa.map((ingrediente, index) => (
                                 <tr key={index}>
                                     <td>
-                                        <select onChange={(e) => setItemSelecionado(index, e.target.value)}>
+                                        <select onChange={(e) => setItemSelecionado(e.target.value)}>
                                             {produtos && produtos.map((produto) => (
                                                 produto.uid === uid && (
                                                 <option key={produto.id} value={produto.produto}>{produto.produto}</option>
@@ -119,11 +124,10 @@ const PedidosCreate = () => {
                                         </select>
                                     </td>
                                     <td>
-                                        <input type="number" onChange={(e) => setQuantidadeMassa(index, e.target.value)}/>
+                                        <input type="number" onChange={(e) => setQuantidadeMassa(e.target.value)}/>
                                     </td>
                                     <td>
-                                        {console.log(ingredienteMassa[index])}
-                                        <button id='btn-save' onClick={() => handleProduto(index, itemSelecionado, quantidadeMassa)}>Salvar</button>
+                                        <button id='btn-save' onClick={() => handleProduto(index)}>Salvar</button>
                                         <button id='btn-del' onClick={() => delProdutos()}>Excluir</button>
                                     </td>
                                 </tr>
