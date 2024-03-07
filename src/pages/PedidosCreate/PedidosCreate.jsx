@@ -6,6 +6,7 @@ import { useDocuments } from '../../hooks/useDocuments'
 import { useAuthValue } from '../../context/authContext'
 
 const PedidosCreate = () => {
+    const [salvo, setSalvo] = useState(false)
     const [nome, setNome] = useState('')
     const [telefone, setTelefone] = useState('')
     const [email, setEmail] = useState('')
@@ -39,19 +40,30 @@ const PedidosCreate = () => {
     };
 
     const handleProduto = (index) => {
-    ingredienteMassa[index] = {
-        produto: itemSelecionado,
-        quantidade: quantidadeMassa,
-    }
 
-    const insumoCadastrado = produtos.find(produto => {
-        return uid === produto.uid && ingredienteMassa[index].produto === produto.produto
-    })
+        // colocar false e true dentro do objeto do ingredienteMassa
 
-    // pesoEmbalagem, unidadeMedida
+        
+        const insumoCadastrado = produtos.find(produto => {
+            return uid === produto.uid &&  itemSelecionado === produto.produto
+        })
 
-    // Fazer lógica de calculo pro insumo que achamos e bate com o insumo cadastrado!
-    console.log(insumoCadastrado)
+        const preçoPorInsumo = (quantidadeMassa * insumoCadastrado.preçoCompra) / insumoCadastrado.pesoEmbalagem
+
+        ingredienteMassa[index] = {
+            produto: itemSelecionado,
+            quantidade: quantidadeMassa,
+            preçoDeCustoReceita: preçoPorInsumo,
+        }
+
+        if(salvo){
+            setSalvo(false)
+            // editar?
+        } else {
+            setSalvo(true)
+        }
+
+        return salvo;
     };
 
     const handleSubmit = (e) => {
@@ -113,28 +125,30 @@ const PedidosCreate = () => {
                                 </tr>
                             </thead>
                             <tbody>
-                                {/* problemas aqui nessas linhas */}
-
                                 {ingredienteMassa.map((ingrediente, index) => (
-                                <tr key={index}>
-                                    <td>
-                                        <select onChange={(e) => setItemSelecionado(e.target.value)}>
-                                            {produtos && produtos.map((produto) => (
-                                                produto.uid === uid && (
-                                                <option key={produto.id} value={produto.produto}>{produto.produto}</option>
-                                            )))}
-                                        </select>
-                                    </td>
-                                    <td>
-                                        <input type="number" onChange={(e) => setQuantidadeMassa(e.target.value)}/>
-                                    </td>
-                                    <td>
-                                        <button id='btn-save' onClick={() => handleProduto(index)}>Salvar</button>
-                                        <button id='btn-del' onClick={() => delProdutos()}>Excluir</button>
-                                    </td>
-                                </tr>
+                                    <tr key={index}>
+                                        <td>
+                                            <select onChange={(e) => setItemSelecionado(e.target.value)} defaultValue="">
+                                                <option disabled hidden value="">Selecione um produto</option>
+                                                {produtos && produtos.map((produto) => (
+                                                    produto.uid === uid && (
+                                                    <option key={produto.id} value={produto.produto}>{produto.produto}</option>
+                                                )))}
+                                            </select>
+                                        </td>
+                                        <td>
+                                            <input type="number" onChange={(e) => setQuantidadeMassa(e.target.value)}/>
+                                        </td>
+                                        <td>
+                                            {!salvo ? 
+                                                (<button id='btn-save' onClick={() => handleProduto(index)}>Salvar</button>)
+                                                :
+                                                (<button id='btn-save' onClick={() => handleProduto(index)}>Editar</button>)
+                                            }
+                                            <button id='btn-del' onClick={() => delProdutos()}>Excluir</button>
+                                        </td>
+                                    </tr>
                                 ))}
-
                             </tbody>
                         </table>
                         <div className={style.adicionar_pedido}>
