@@ -13,8 +13,6 @@ const PedidosCreate = () => {
     const [itemSelecionado, setItemSelecionado] = useState('')
     const [descricao, setDescricao] = useState('')
     const [quantidadeMassa, setQuantidadeMassa] = useState(0)
-    const [quantidadeRecheio, setQuantidadeRecheio] = useState(0)
-    const [quantidadeCobertura, setQuantidadeCobertura] = useState(0)
     const [ingredienteMassa, setIngredienteMassa] = useState([])
     const [ingredienteRecheio, setIngredienteRecheio] = useState([])
     const [ingredienteCobertura, setIngredienteCobertura] = useState([])
@@ -35,15 +33,13 @@ const PedidosCreate = () => {
     }
 
     const adicionarIngrediente = () => {
-        setIngredienteMassa([...ingredienteMassa, {produto: '', quantidade: 0 }]);
+        setIngredienteMassa([...ingredienteMassa, {produto: '', quantidade: 0, preçoDeCustoReceita: 0, salvo: false }]);
+        setSalvo(false)
+        setItemSelecionado('')
         setQuantidadeMassa(0);
     };
 
     const handleProduto = (index) => {
-
-        // colocar false e true dentro do objeto do ingredienteMassa
-
-        
         const insumoCadastrado = produtos.find(produto => {
             return uid === produto.uid &&  itemSelecionado === produto.produto
         })
@@ -54,16 +50,10 @@ const PedidosCreate = () => {
             produto: itemSelecionado,
             quantidade: quantidadeMassa,
             preçoDeCustoReceita: preçoPorInsumo,
+            salvo: true,
         }
 
-        if(salvo){
-            setSalvo(false)
-            // editar?
-        } else {
-            setSalvo(true)
-        }
-
-        return salvo;
+        if(ingredienteMassa[index].salvo == true) setSalvo(true)
     };
 
     const handleSubmit = (e) => {
@@ -125,7 +115,7 @@ const PedidosCreate = () => {
                                 </tr>
                             </thead>
                             <tbody>
-                                {ingredienteMassa.map((ingrediente, index) => (
+                                {ingredienteMassa.map((index) => (
                                     <tr key={index}>
                                         <td>
                                             <select onChange={(e) => setItemSelecionado(e.target.value)} defaultValue="">
@@ -140,12 +130,14 @@ const PedidosCreate = () => {
                                             <input type="number" onChange={(e) => setQuantidadeMassa(e.target.value)}/>
                                         </td>
                                         <td>
-                                            {!salvo ? 
+                                            {!salvo &&
                                                 (<button id='btn-save' onClick={() => handleProduto(index)}>Salvar</button>)
-                                                :
-                                                (<button id='btn-save' onClick={() => handleProduto(index)}>Editar</button>)
                                             }
-                                            <button id='btn-del' onClick={() => delProdutos()}>Excluir</button>
+                                            {!salvo ? 
+                                                (<button id='btn-del' onClick={() => delProdutos()}>Excluir</button>)
+                                                :
+                                                (<button id='btn-del' onClick={() => delProdutos()}>Excluir</button>)
+                                            }
                                         </td>
                                     </tr>
                                 ))}
