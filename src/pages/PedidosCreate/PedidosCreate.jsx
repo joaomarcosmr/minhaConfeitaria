@@ -13,7 +13,7 @@ const PedidosCreate = () => {
     const [itemSelecionado, setItemSelecionado] = useState('')
     const [descricao, setDescricao] = useState('')
     const [quantidadeMassa, setQuantidadeMassa] = useState(0)
-    const [ingredienteMassa, setIngredienteMassa] = useState([])
+    const [ingredienteMassa, setIngredienteMassa] = useState([{produto: '', quantidade: 0, preçoDeCustoReceita: 0, salvo: false },])
     const [ingredienteRecheio, setIngredienteRecheio] = useState([])
     const [ingredienteCobertura, setIngredienteCobertura] = useState([])
     const [countMassa, setCountMassa] = useState(1)
@@ -33,16 +33,23 @@ const PedidosCreate = () => {
     }
 
     const adicionarIngrediente = () => {
-        setIngredienteMassa([...ingredienteMassa, {produto: '', quantidade: 0, preçoDeCustoReceita: 0, salvo: false }]);
-        setSalvo(false)
-        setItemSelecionado('')
-        setQuantidadeMassa(0);
+        const ultimoElemento = ingredienteMassa[ingredienteMassa.length - 1];
+        if (ultimoElemento.salvo === true){
+            setIngredienteMassa([...ingredienteMassa, {produto: '', quantidade: 0, preçoDeCustoReceita: 0, salvo: false }]);
+            setItemSelecionado('')
+            setQuantidadeMassa(0);
+        }
     };
 
     const handleProduto = (index) => {
         const insumoCadastrado = produtos.find(produto => {
             return uid === produto.uid &&  itemSelecionado === produto.produto
         })
+
+        if (!insumoCadastrado) {
+            console.error("Produto não encontrado!");
+            return;
+        }
 
         const preçoPorInsumo = (quantidadeMassa * insumoCadastrado.preçoCompra) / insumoCadastrado.pesoEmbalagem
 
@@ -53,7 +60,15 @@ const PedidosCreate = () => {
             salvo: true,
         }
 
-        if(ingredienteMassa[index].salvo == true) setSalvo(true)
+        const updatedIngredienteMassa = [...ingredienteMassa];
+        updatedIngredienteMassa[index] = {
+            produto: itemSelecionado,
+            quantidade: quantidadeMassa,
+            preçoDeCustoReceita: preçoPorInsumo,
+            salvo: true,
+        };
+
+        setIngredienteMassa(updatedIngredienteMassa)
     };
 
     const handleSubmit = (e) => {
@@ -115,7 +130,7 @@ const PedidosCreate = () => {
                                 </tr>
                             </thead>
                             <tbody>
-                                {ingredienteMassa.map((index) => (
+                                {ingredienteMassa.map((ingrediente, index = index + 1) => (
                                     <tr key={index}>
                                         <td>
                                             <select onChange={(e) => setItemSelecionado(e.target.value)} defaultValue="">
@@ -130,13 +145,16 @@ const PedidosCreate = () => {
                                             <input type="number" onChange={(e) => setQuantidadeMassa(e.target.value)}/>
                                         </td>
                                         <td>
-                                            {!salvo &&
-                                                (<button id='btn-save' onClick={() => handleProduto(index)}>Salvar</button>)
-                                            }
-                                            {!salvo ? 
-                                                (<button id='btn-del' onClick={() => delProdutos()}>Excluir</button>)
+                                            {ingrediente && !ingrediente.salvo ?
+                                                (<>
+                                                    <button id='btn-save' onClick={() => handleProduto(index)}>Salvar</button>
+                                                    <button id='btn-del' onClick={() => delProdutos()}>Excluir</button>
+                                                </>)
                                                 :
-                                                (<button id='btn-del' onClick={() => delProdutos()}>Excluir</button>)
+                                                (<>
+                                                    <button id='btn' onClick={() => handleProduto(index)}>Editar</button>
+                                                    <button id='btn-del' onClick={() => delProdutos()}>Excluir</button>
+                                                </>)
                                             }
                                         </td>
                                     </tr>
