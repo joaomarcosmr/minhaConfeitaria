@@ -12,6 +12,7 @@ const PedidosCreate = () => {
     const [email, setEmail] = useState('')
     const [itemSelecionado, setItemSelecionado] = useState('')
     const [descricao, setDescricao] = useState('')
+    const [errorSalvar, setErrorSalvar] = useState('')
     const [quantidadeMassa, setQuantidadeMassa] = useState(0)
     const [ingredienteMassa, setIngredienteMassa] = useState([{produto: '', quantidade: 0, preçoDeCustoReceita: 0, salvo: false },])
     const [ingredienteRecheio, setIngredienteRecheio] = useState([])
@@ -38,6 +39,9 @@ const PedidosCreate = () => {
             setIngredienteMassa([...ingredienteMassa, {produto: '', quantidade: 0, preçoDeCustoReceita: 0, salvo: false }]);
             setItemSelecionado('')
             setQuantidadeMassa(0);
+            setErrorSalvar('')
+        } else {
+            setErrorSalvar('É necessário salvar o ingrediente primeiro')
         }
     };
 
@@ -61,15 +65,50 @@ const PedidosCreate = () => {
         }
 
         const updatedIngredienteMassa = [...ingredienteMassa];
-        updatedIngredienteMassa[index] = {
-            produto: itemSelecionado,
-            quantidade: quantidadeMassa,
-            preçoDeCustoReceita: preçoPorInsumo,
-            salvo: true,
+            updatedIngredienteMassa[index] = {
+                produto: itemSelecionado,
+                quantidade: quantidadeMassa,
+                preçoDeCustoReceita: preçoPorInsumo,
+                salvo: true,
         };
 
         setIngredienteMassa(updatedIngredienteMassa)
+        setErrorSalvar('')
     };
+
+    const editProduto = (ingrediente, index) => {
+        
+        // let contagem = 0
+        // let todosSalvos = false
+
+        // for(let i = 0; ingredienteMassa.length + 1; i++){
+        //     if(ingredienteMassa[i].salvo == true){
+        //         console.log('passei por aqui')
+        //         contagem += 1
+        //         console.log(contagem)
+        //     }
+            
+        //     if(contagem == ingredienteMassa.length){
+        //         todosSalvos = true
+        //     }
+        // }
+
+        // console.log(todosSalvos)
+
+
+        setItemSelecionado(ingrediente.produto)
+        setQuantidadeMassa(ingrediente.quantidade)
+
+        const updatedIngredienteMassa = [...ingredienteMassa];
+        updatedIngredienteMassa[index] = {
+            produto: itemSelecionado,
+            quantidade: quantidadeMassa,
+            preçoDeCustoReceita: 0,
+            salvo: false,
+        };
+
+        setIngredienteMassa(updatedIngredienteMassa)
+    }
 
     const handleSubmit = (e) => {
         e.preventDefault()
@@ -130,19 +169,41 @@ const PedidosCreate = () => {
                                 </tr>
                             </thead>
                             <tbody>
-                                {ingredienteMassa.map((ingrediente, index = index + 1) => (
+                                {ingredienteMassa.map((ingrediente, index) => (
                                     <tr key={index}>
                                         <td>
-                                            <select onChange={(e) => setItemSelecionado(e.target.value)} defaultValue="">
-                                                <option disabled hidden value="">Selecione um produto</option>
-                                                {produtos && produtos.map((produto) => (
-                                                    produto.uid === uid && (
-                                                    <option key={produto.id} value={produto.produto}>{produto.produto}</option>
-                                                )))}
-                                            </select>
+                                            {ingrediente && !ingrediente.salvo ?
+                                                (<>
+                                                    <select onChange={(e) => setItemSelecionado(e.target.value)} defaultValue="">
+                                                        <option disabled hidden value="">Selecione um produto</option>
+                                                        {produtos && produtos.map((produto) => (
+                                                            produto.uid === uid && (
+                                                            <option key={produto.id} value={produto.produto}>{produto.produto}</option>
+                                                        )))}
+                                                    </select>
+                                                </>)
+                                                :
+                                                (<>
+                                                    <select onChange={(e) => setItemSelecionado(e.target.value)} defaultValue="">
+                                                        <option disabled hidden value="">Selecione um produto</option>
+                                                        {produtos && produtos.map((produto) => (
+                                                            produto.uid === uid && (
+                                                            <option key={produto.id} disabled value={produto.produto}>{produto.produto}</option>
+                                                        )))}
+                                                    </select>
+                                                </>)
+                                            }
                                         </td>
                                         <td>
-                                            <input type="number" onChange={(e) => setQuantidadeMassa(e.target.value)}/>
+                                        {ingrediente && !ingrediente.salvo ?
+                                                (<>
+                                                    <input type="number" onChange={(e) => setQuantidadeMassa(e.target.value)}/>
+                                                </>)
+                                                :
+                                                (<>
+                                                    <input type="number" disabled onChange={(e) => setQuantidadeMassa(e.target.value)}/>
+                                                </>)
+                                            }
                                         </td>
                                         <td>
                                             {ingrediente && !ingrediente.salvo ?
@@ -152,7 +213,7 @@ const PedidosCreate = () => {
                                                 </>)
                                                 :
                                                 (<>
-                                                    <button id='btn' onClick={() => handleProduto(index)}>Editar</button>
+                                                    <button id='btn' onClick={() => editProduto(ingrediente, index)}>Editar</button>
                                                     <button id='btn-del' onClick={() => delProdutos()}>Excluir</button>
                                                 </>)
                                             }
@@ -163,6 +224,7 @@ const PedidosCreate = () => {
                         </table>
                         <div className={style.adicionar_pedido}>
                             <button onClick={() => adicionarIngrediente()}>Adicionar Ingrediente</button>
+                            {errorSalvar.length > 0 && <p className='error'>{errorSalvar}</p>}
                         </div>
                     </form>
                 </div>
