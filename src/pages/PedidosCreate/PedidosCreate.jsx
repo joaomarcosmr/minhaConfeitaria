@@ -77,37 +77,31 @@ const PedidosCreate = () => {
     };
 
     const editProduto = (ingrediente, index) => {
-        
-        // let contagem = 0
-        // let todosSalvos = false
+        let contagem = 0
 
-        // for(let i = 0; ingredienteMassa.length + 1; i++){
-        //     if(ingredienteMassa[i].salvo == true){
-        //         console.log('passei por aqui')
-        //         contagem += 1
-        //         console.log(contagem)
-        //     }
-            
-        //     if(contagem == ingredienteMassa.length){
-        //         todosSalvos = true
-        //     }
-        // }
+        for(let i = 0; ingredienteMassa.length; i++){
+            if(ingredienteMassa[i].salvo == true){
+                contagem += 1
+            }
+        }
 
-        // console.log(todosSalvos)
+        if(contagem == ingredienteMassa.length){
+            console.log('ok')
 
+            setItemSelecionado(ingrediente.produto)
+            setQuantidadeMassa(ingrediente.quantidade)
 
-        setItemSelecionado(ingrediente.produto)
-        setQuantidadeMassa(ingrediente.quantidade)
+            const updatedIngredienteMassa = [...ingredienteMassa];
+            updatedIngredienteMassa[index] = {
+                produto: itemSelecionado,
+                quantidade: quantidadeMassa,
+                preçoDeCustoReceita: 0,
+                salvo: false,
+            };
 
-        const updatedIngredienteMassa = [...ingredienteMassa];
-        updatedIngredienteMassa[index] = {
-            produto: itemSelecionado,
-            quantidade: quantidadeMassa,
-            preçoDeCustoReceita: 0,
-            salvo: false,
-        };
+            setIngredienteMassa(updatedIngredienteMassa)
+        }
 
-        setIngredienteMassa(updatedIngredienteMassa)
     }
 
     const handleSubmit = (e) => {
