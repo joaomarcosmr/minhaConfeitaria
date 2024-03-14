@@ -7,6 +7,7 @@ import { useAuthValue } from '../../context/authContext'
 
 const PedidosCreate = () => {
     const [salvo, setSalvo] = useState(false)
+    const [editando, setEditando] = useState(false)
     const [nome, setNome] = useState('')
     const [telefone, setTelefone] = useState('')
     const [email, setEmail] = useState('')
@@ -14,7 +15,7 @@ const PedidosCreate = () => {
     const [descricao, setDescricao] = useState('')
     const [errorSalvar, setErrorSalvar] = useState('')
     const [quantidadeMassa, setQuantidadeMassa] = useState(0)
-    const [ingredienteMassa, setIngredienteMassa] = useState([{produto: '', quantidade: 0, preçoDeCustoReceita: 0, salvo: false },])
+    const [ingredienteMassa, setIngredienteMassa] = useState([{id: 0, produto: '', quantidade: 0, preçoDeCustoReceita: 0, salvo: false },])
     const [ingredienteRecheio, setIngredienteRecheio] = useState([])
     const [ingredienteCobertura, setIngredienteCobertura] = useState([])
     const [countMassa, setCountMassa] = useState(1)
@@ -29,13 +30,19 @@ const PedidosCreate = () => {
 
     }
 
-    const delProdutos = () => {
+    const delProdutos = (index) => {
+        const objetoId = ingredienteMassa.find(produto => {
+            return produto.id === index
+        })
 
+        const novoArray = ingredienteMassa.filter(item => item.id !== index);
+
+        setIngredienteMassa(novoArray)
     }
 
     const adicionarIngrediente = () => {
         const ultimoElemento = ingredienteMassa[ingredienteMassa.length - 1];
-        if (ultimoElemento.salvo === true){
+        if (ultimoElemento.salvo === true && !editando){
             setIngredienteMassa([...ingredienteMassa, {produto: '', quantidade: 0, preçoDeCustoReceita: 0, salvo: false }]);
             setItemSelecionado('')
             setQuantidadeMassa(0);
@@ -66,26 +73,23 @@ const PedidosCreate = () => {
 
         const updatedIngredienteMassa = [...ingredienteMassa];
             updatedIngredienteMassa[index] = {
+                id: index,
                 produto: itemSelecionado,
                 quantidade: quantidadeMassa,
                 preçoDeCustoReceita: preçoPorInsumo,
                 salvo: true,
         };
 
+        setEditando(false)
         setIngredienteMassa(updatedIngredienteMassa)
         setErrorSalvar('')
     };
 
     const editProduto = (ingrediente, index) => {
-        let contagem = 0
 
-        for(let i = 0; ingredienteMassa.length; i++){
-            if(ingredienteMassa[i].salvo == true){
-                contagem += 1
-            }
-        }
+        const todosSalvos = ingredienteMassa.every(item => item.salvo);
 
-        if(contagem == ingredienteMassa.length){
+        if(todosSalvos){
             console.log('ok')
 
             setItemSelecionado(ingrediente.produto)
@@ -93,6 +97,7 @@ const PedidosCreate = () => {
 
             const updatedIngredienteMassa = [...ingredienteMassa];
             updatedIngredienteMassa[index] = {
+                id: index,
                 produto: itemSelecionado,
                 quantidade: quantidadeMassa,
                 preçoDeCustoReceita: 0,
@@ -100,6 +105,7 @@ const PedidosCreate = () => {
             };
 
             setIngredienteMassa(updatedIngredienteMassa)
+            setEditando(true)
         }
 
     }
@@ -163,7 +169,7 @@ const PedidosCreate = () => {
                                 </tr>
                             </thead>
                             <tbody>
-                                {ingredienteMassa.map((ingrediente, index) => (
+                                {ingredienteMassa.map((ingrediente, index = index + 1) => (
                                     <tr key={index}>
                                         <td>
                                             {ingrediente && !ingrediente.salvo ?
@@ -191,11 +197,11 @@ const PedidosCreate = () => {
                                         <td>
                                         {ingrediente && !ingrediente.salvo ?
                                                 (<>
-                                                    <input type="number" onChange={(e) => setQuantidadeMassa(e.target.value)}/>
+                                                    <input type="number" onChange={(e) => setQuantidadeMassa(e.target.value)}/> <span className='g-ml'>G / ML</span>
                                                 </>)
                                                 :
                                                 (<>
-                                                    <input type="number" disabled onChange={(e) => setQuantidadeMassa(e.target.value)}/>
+                                                    <input type="number" disabled onChange={(e) => setQuantidadeMassa(e.target.value)}/> <span className='g-ml'>G / ML</span>
                                                 </>)
                                             }
                                         </td>
@@ -203,12 +209,12 @@ const PedidosCreate = () => {
                                             {ingrediente && !ingrediente.salvo ?
                                                 (<>
                                                     <button id='btn-save' onClick={() => handleProduto(index)}>Salvar</button>
-                                                    <button id='btn-del' onClick={() => delProdutos()}>Excluir</button>
+                                                    <button id='btn-del' onClick={() => delProdutos(index)}>Excluir</button>
                                                 </>)
                                                 :
                                                 (<>
                                                     <button id='btn' onClick={() => editProduto(ingrediente, index)}>Editar</button>
-                                                    <button id='btn-del' onClick={() => delProdutos()}>Excluir</button>
+                                                    <button id='btn-del' onClick={() => delProdutos(index)}>Excluir</button>
                                                 </>)
                                             }
                                         </td>

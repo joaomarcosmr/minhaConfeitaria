@@ -52,6 +52,10 @@ body{
   margin-top: 10px;
 }
 
+.g-ml{
+  font-size: 12px;
+}
+
 .success{
   text-align: center;
   color: green;
