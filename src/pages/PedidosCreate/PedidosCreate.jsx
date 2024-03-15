@@ -6,6 +6,7 @@ import { useDocuments } from '../../hooks/useDocuments'
 import { useAuthValue } from '../../context/authContext'
 
 const PedidosCreate = () => {
+
     const [salvo, setSalvo] = useState(false)
     const [editando, setEditando] = useState(false)
     const [nome, setNome] = useState('')
@@ -15,9 +16,10 @@ const PedidosCreate = () => {
     const [descricao, setDescricao] = useState('')
     const [errorSalvar, setErrorSalvar] = useState('')
     const [quantidadeMassa, setQuantidadeMassa] = useState(0)
-    const [ingredienteMassa, setIngredienteMassa] = useState([{id: 0, produto: '', quantidade: 0, preçoDeCustoReceita: 0, salvo: false },])
+    const [ingredienteMassa, setIngredienteMassa] = useState([])
     const [ingredienteRecheio, setIngredienteRecheio] = useState([])
     const [ingredienteCobertura, setIngredienteCobertura] = useState([])
+    const [id, setId] = useState(0)
     const [countMassa, setCountMassa] = useState(1)
     const [countRecheio, setCountRecheio] = useState(1)
     const [countCobertura, setCountCobertura] = useState(1)
@@ -25,25 +27,11 @@ const PedidosCreate = () => {
     const { user } = useAuthValue()
     const uid = user.uid
     const { documents: produtos, loading, error } = useDocuments('produtos')
-
-    const salvarProdutos = (e) => {
-
-    }
-
-    const delProdutos = (index) => {
-        const objetoId = ingredienteMassa.find(produto => {
-            return produto.id === index
-        })
-
-        const novoArray = ingredienteMassa.filter(item => item.id !== index);
-
-        setIngredienteMassa(novoArray)
-    }
-
+    
     const adicionarIngrediente = () => {
-        const ultimoElemento = ingredienteMassa[ingredienteMassa.length - 1];
-        if (ultimoElemento.salvo === true && !editando){
-            setIngredienteMassa([...ingredienteMassa, {produto: '', quantidade: 0, preçoDeCustoReceita: 0, salvo: false }]);
+        const todosSalvos = ingredienteMassa.every(item => item.salvo);
+        if (todosSalvos === true && !editando){
+            setIngredienteMassa([...ingredienteMassa, {id: id, produto: '', quantidade: 0, preçoDeCustoReceita: 0, salvo: false }]);
             setItemSelecionado('')
             setQuantidadeMassa(0);
             setErrorSalvar('')
@@ -64,16 +52,9 @@ const PedidosCreate = () => {
 
         const preçoPorInsumo = (quantidadeMassa * insumoCadastrado.preçoCompra) / insumoCadastrado.pesoEmbalagem
 
-        ingredienteMassa[index] = {
-            produto: itemSelecionado,
-            quantidade: quantidadeMassa,
-            preçoDeCustoReceita: preçoPorInsumo,
-            salvo: true,
-        }
-
         const updatedIngredienteMassa = [...ingredienteMassa];
             updatedIngredienteMassa[index] = {
-                id: index,
+                id: id,
                 produto: itemSelecionado,
                 quantidade: quantidadeMassa,
                 preçoDeCustoReceita: preçoPorInsumo,
@@ -82,6 +63,7 @@ const PedidosCreate = () => {
 
         setEditando(false)
         setIngredienteMassa(updatedIngredienteMassa)
+        setId(id + 1)
         setErrorSalvar('')
     };
 
@@ -97,7 +79,7 @@ const PedidosCreate = () => {
 
             const updatedIngredienteMassa = [...ingredienteMassa];
             updatedIngredienteMassa[index] = {
-                id: index,
+                id: id,
                 produto: itemSelecionado,
                 quantidade: quantidadeMassa,
                 preçoDeCustoReceita: 0,
@@ -108,6 +90,11 @@ const PedidosCreate = () => {
             setEditando(true)
         }
 
+    }
+
+    const delProdutos = (ingrediente) => {
+        const novoArray = ingredienteMassa.filter(item => item !== ingrediente);
+        setIngredienteMassa(novoArray);
     }
 
     const handleSubmit = (e) => {
@@ -169,8 +156,8 @@ const PedidosCreate = () => {
                                 </tr>
                             </thead>
                             <tbody>
-                                {ingredienteMassa.map((ingrediente, index = index + 1) => (
-                                    <tr key={index}>
+                                {ingredienteMassa.map((ingrediente, index) => (
+                                    <tr key={ingrediente.id}>
                                         <td>
                                             {ingrediente && !ingrediente.salvo ?
                                                 (<>
@@ -209,12 +196,12 @@ const PedidosCreate = () => {
                                             {ingrediente && !ingrediente.salvo ?
                                                 (<>
                                                     <button id='btn-save' onClick={() => handleProduto(index)}>Salvar</button>
-                                                    <button id='btn-del' onClick={() => delProdutos(index)}>Excluir</button>
+                                                    <button id='btn-del' onClick={() => delProdutos(ingrediente)}>Excluir</button>
                                                 </>)
                                                 :
                                                 (<>
                                                     <button id='btn' onClick={() => editProduto(ingrediente, index)}>Editar</button>
-                                                    <button id='btn-del' onClick={() => delProdutos(index)}>Excluir</button>
+                                                    <button id='btn-del' onClick={() => delProdutos(ingrediente)}>Excluir</button>
                                                 </>)
                                             }
                                         </td>
