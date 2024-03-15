@@ -16,10 +16,10 @@ const PedidosCreate = () => {
     const [descricao, setDescricao] = useState('')
     const [errorSalvar, setErrorSalvar] = useState('')
     const [quantidadeMassa, setQuantidadeMassa] = useState(0)
-    const [ingredienteMassa, setIngredienteMassa] = useState([])
-    const [ingredienteRecheio, setIngredienteRecheio] = useState([])
-    const [ingredienteCobertura, setIngredienteCobertura] = useState([])
     const [id, setId] = useState(0)
+    const [ingredienteMassa, setIngredienteMassa] = useState([{id: id, produto: '', quantidade: 0, preçoDeCustoReceita: 0, salvo: false }])
+    const [ingredienteRecheio, setIngredienteRecheio] = useState([{id: id, produto: '', quantidade: 0, preçoDeCustoReceita: 0, salvo: false }])
+    const [ingredienteCobertura, setIngredienteCobertura] = useState([{id: id, produto: '', quantidade: 0, preçoDeCustoReceita: 0, salvo: false }])
     const [countMassa, setCountMassa] = useState(1)
     const [countRecheio, setCountRecheio] = useState(1)
     const [countCobertura, setCountCobertura] = useState(1)
@@ -235,7 +235,57 @@ const PedidosCreate = () => {
                                 </tr>
                             </thead>
                             <tbody>
-                                {/* {renderizarItens(countRecheio, setProdutoRecheio)} */}
+                            {ingredienteRecheio.map((ingrediente, index) => (
+                                    <tr key={ingrediente.id}>
+                                        <td>
+                                            {ingrediente && !ingrediente.salvo ?
+                                                (<>
+                                                    <select onChange={(e) => setItemSelecionado(e.target.value)} defaultValue="">
+                                                        <option disabled hidden value="">Selecione um produto</option>
+                                                        {produtos && produtos.map((produto) => (
+                                                            produto.uid === uid && (
+                                                            <option key={produto.id} value={produto.produto}>{produto.produto}</option>
+                                                        )))}
+                                                    </select>
+                                                </>)
+                                                :
+                                                (<>
+                                                    <select onChange={(e) => setItemSelecionado(e.target.value)} defaultValue="">
+                                                        <option disabled hidden value="">Selecione um produto</option>
+                                                        {produtos && produtos.map((produto) => (
+                                                            produto.uid === uid && (
+                                                            <option key={produto.id} disabled value={produto.produto}>{produto.produto}</option>
+                                                        )))}
+                                                    </select>
+                                                </>)
+                                            }
+                                        </td>
+                                        <td>
+                                        {ingrediente && !ingrediente.salvo ?
+                                                (<>
+                                                    <input type="number" onChange={(e) => setQuantidadeMassa(e.target.value)}/> <span className='g-ml'>G / ML</span>
+                                                </>)
+                                                :
+                                                (<>
+                                                    <input type="number" disabled onChange={(e) => setQuantidadeMassa(e.target.value)}/> <span className='g-ml'>G / ML</span>
+                                                </>)
+                                            }
+                                        </td>
+                                        <td>
+                                            {ingrediente && !ingrediente.salvo ?
+                                                (<>
+                                                    <button id='btn-save' onClick={() => handleProduto(index)}>Salvar</button>
+                                                    <button id='btn-del' onClick={() => delProdutos(ingrediente)}>Excluir</button>
+                                                </>)
+                                                :
+                                                (<>
+                                                    <button id='btn' onClick={() => editProduto(ingrediente, index)}>Editar</button>
+                                                    <button id='btn-del' onClick={() => delProdutos(ingrediente)}>Excluir</button>
+                                                </>)
+                                            }
+                                        </td>
+                                    </tr>
+                                ))}
                             </tbody>
                         </table>
                         <div className={style.adicionar_pedido}>
@@ -264,7 +314,57 @@ const PedidosCreate = () => {
                                 </tr>
                             </thead>
                             <tbody>
-                                {/* {renderizarItens(countCobertura, setProdutoCobertura)} */}
+                            {ingredienteMassa.map((ingrediente, index) => (
+                                    <tr key={ingrediente.id}>
+                                        <td>
+                                            {ingrediente && !ingrediente.salvo ?
+                                                (<>
+                                                    <select onChange={(e) => setItemSelecionado(e.target.value)} defaultValue="">
+                                                        <option disabled hidden value="">Selecione um produto</option>
+                                                        {produtos && produtos.map((produto) => (
+                                                            produto.uid === uid && (
+                                                            <option key={produto.id} value={produto.produto}>{produto.produto}</option>
+                                                        )))}
+                                                    </select>
+                                                </>)
+                                                :
+                                                (<>
+                                                    <select onChange={(e) => setItemSelecionado(e.target.value)} defaultValue="">
+                                                        <option disabled hidden value="">Selecione um produto</option>
+                                                        {produtos && produtos.map((produto) => (
+                                                            produto.uid === uid && (
+                                                            <option key={produto.id} disabled value={produto.produto}>{produto.produto}</option>
+                                                        )))}
+                                                    </select>
+                                                </>)
+                                            }
+                                        </td>
+                                        <td>
+                                        {ingrediente && !ingrediente.salvo ?
+                                                (<>
+                                                    <input type="number" onChange={(e) => setQuantidadeMassa(e.target.value)}/> <span className='g-ml'>G / ML</span>
+                                                </>)
+                                                :
+                                                (<>
+                                                    <input type="number" disabled onChange={(e) => setQuantidadeMassa(e.target.value)}/> <span className='g-ml'>G / ML</span>
+                                                </>)
+                                            }
+                                        </td>
+                                        <td>
+                                            {ingrediente && !ingrediente.salvo ?
+                                                (<>
+                                                    <button id='btn-save' onClick={() => handleProduto(index)}>Salvar</button>
+                                                    <button id='btn-del' onClick={() => delProdutos(ingrediente)}>Excluir</button>
+                                                </>)
+                                                :
+                                                (<>
+                                                    <button id='btn' onClick={() => editProduto(ingrediente, index)}>Editar</button>
+                                                    <button id='btn-del' onClick={() => delProdutos(ingrediente)}>Excluir</button>
+                                                </>)
+                                            }
+                                        </td>
+                                    </tr>
+                                ))}
                             </tbody>
                         </table>
                         <div className={style.adicionar_pedido}>
