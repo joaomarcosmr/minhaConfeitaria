@@ -27,21 +27,47 @@ const PedidosCreate = () => {
     const { user } = useAuthValue()
     const uid = user.uid
     const { documents: produtos, loading, error } = useDocuments('produtos')
+
+    const massa = 'massa';
+    const cobertura = 'cobertura'
+    const recheio = 'recheio'
     
-    const adicionarIngrediente = () => {
-        const todosSalvos = ingredienteMassa.every(item => item.salvo);
-        if (todosSalvos === true && !editando){
-            setIngredienteMassa([...ingredienteMassa, {id: id, produto: '', quantidade: 0, preçoDeCustoReceita: 0, salvo: false }]);
-            setItemSelecionado('')
-            setQuantidadeMassa(0);
-            setErrorSalvar('')
-        } else {
-            setErrorSalvar('É necessário salvar o ingrediente primeiro')
+    const adicionarIngrediente = (sessao) => {
+        if(sessao = massa){
+            const todosSalvos = ingredienteMassa.every(item => item.salvo);
+            if (todosSalvos === true && !editando){
+                setIngredienteMassa([...ingredienteMassa, {id: id, produto: '', quantidade: 0, preçoDeCustoReceita: 0, salvo: false }]);
+                setItemSelecionado('')
+                setQuantidadeMassa(0);
+                setErrorSalvar('')
+            } else {
+                setErrorSalvar('É necessário salvar o ingrediente primeiro')
+            }
+        } else if(sessao = recheio){
+            const todosSalvos = ingredienteRecheio.every(item => item.salvo);
+            if (todosSalvos === true && !editando){
+                setIngredienteRecheio([...ingredienteRecheio, {id: id, produto: '', quantidade: 0, preçoDeCustoReceita: 0, salvo: false }]);
+                setItemSelecionado('')
+                setQuantidadeMassa(0);
+                setErrorSalvar('')
+            } else {
+                setErrorSalvar('É necessário salvar o ingrediente primeiro')
+            }
+        } else if(sessao = cobertura){
+            const todosSalvos = ingredienteCobertura.every(item => item.salvo);
+            if (todosSalvos === true && !editando){
+                setIngredienteCobertura([...ingredienteCobertura, {id: id, produto: '', quantidade: 0, preçoDeCustoReceita: 0, salvo: false }]);
+                setItemSelecionado('')
+                setQuantidadeMassa(0);
+                setErrorSalvar('')
+            } else {
+                setErrorSalvar('É necessário salvar o ingrediente primeiro')
+            }
         }
     };
 
-    const handleProduto = (massa, index) => {
-        if(massa == 'massa'){
+    const handleProduto = (sessao, index) => {
+        if(sessao == massa){
             const insumoCadastrado = produtos.find(produto => {
                 return uid === produto.uid &&  itemSelecionado === produto.produto
             })
@@ -66,7 +92,7 @@ const PedidosCreate = () => {
             setIngredienteMassa(updatedIngredienteMassa)
             setId(id + 1)
             setErrorSalvar('')
-        } else if(massa == 'cobertura'){
+        } else if(sessao == cobertura){
             const insumoCadastrado = produtos.find(produto => {
                 return uid === produto.uid &&  itemSelecionado === produto.produto
             })
@@ -91,7 +117,7 @@ const PedidosCreate = () => {
             setIngredienteCobertura(updatedIngredienteCobertura)
             setId(id + 1)
             setErrorSalvar('')
-        } else if(massa == 'recheio'){
+        } else if(sessao == recheio){
             const insumoCadastrado = produtos.find(produto => {
                 return uid === produto.uid &&  itemSelecionado === produto.produto
             })
@@ -262,7 +288,7 @@ const PedidosCreate = () => {
                             </tbody>
                         </table>
                         <div className={style.adicionar_pedido}>
-                            <button onClick={() => adicionarIngrediente()}>Adicionar Ingrediente</button>
+                            <button onClick={() => adicionarIngrediente(massa)}>Adicionar Ingrediente</button>
                             {errorSalvar.length > 0 && <p className='error'>{errorSalvar}</p>}
                         </div>
                     </form>
@@ -341,7 +367,8 @@ const PedidosCreate = () => {
                             </tbody>
                         </table>
                         <div className={style.adicionar_pedido}>
-                            <button onClick={() => setCountRecheio(countRecheio + 1)}>Adicionar Ingrediente</button>
+                            <button onClick={() => adicionarIngrediente(recheio)}>Adicionar Ingrediente</button>
+                            {errorSalvar.length > 0 && <p className='error'>{errorSalvar}</p>}
                         </div>
                     </form>
                 </div>
@@ -419,7 +446,8 @@ const PedidosCreate = () => {
                             </tbody>
                         </table>
                         <div className={style.adicionar_pedido}>
-                            <button onClick={() => setCountCobertura(countCobertura + 1)}>Adicionar Ingrediente</button>
+                            <button onClick={() => adicionarIngrediente(cobertura)}>Adicionar Ingrediente</button>
+                            {errorSalvar.length > 0 && <p className='error'>{errorSalvar}</p>}
                         </div>
                     </form>
                 </div>
