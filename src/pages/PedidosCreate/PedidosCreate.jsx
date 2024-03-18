@@ -40,31 +40,83 @@ const PedidosCreate = () => {
         }
     };
 
-    const handleProduto = (index) => {
-        const insumoCadastrado = produtos.find(produto => {
-            return uid === produto.uid &&  itemSelecionado === produto.produto
-        })
-
-        if (!insumoCadastrado) {
-            console.error("Produto não encontrado!");
-            return;
+    const handleProduto = (massa, index) => {
+        if(massa == 'massa'){
+            const insumoCadastrado = produtos.find(produto => {
+                return uid === produto.uid &&  itemSelecionado === produto.produto
+            })
+    
+            if (!insumoCadastrado) {
+                console.error("Produto não encontrado!");
+                return;
+            }
+    
+            const preçoPorInsumo = (quantidadeMassa * insumoCadastrado.preçoCompra) / insumoCadastrado.pesoEmbalagem
+    
+            const updatedIngredienteMassa = [...ingredienteMassa];
+                updatedIngredienteMassa[index] = {
+                    id: id,
+                    produto: itemSelecionado,
+                    quantidade: quantidadeMassa,
+                    preçoDeCustoReceita: preçoPorInsumo,
+                    salvo: true,
+            };
+    
+            setEditando(false)
+            setIngredienteMassa(updatedIngredienteMassa)
+            setId(id + 1)
+            setErrorSalvar('')
+        } else if(massa == 'cobertura'){
+            const insumoCadastrado = produtos.find(produto => {
+                return uid === produto.uid &&  itemSelecionado === produto.produto
+            })
+    
+            if (!insumoCadastrado) {
+                console.error("Produto não encontrado!");
+                return;
+            }
+    
+            const preçoPorInsumo = (quantidadeMassa * insumoCadastrado.preçoCompra) / insumoCadastrado.pesoEmbalagem
+    
+            const updatedIngredienteCobertura = [...ingredienteCobertura];
+                updatedIngredienteCobertura[index] = {
+                    id: id,
+                    produto: itemSelecionado,
+                    quantidade: quantidadeMassa,
+                    preçoDeCustoReceita: preçoPorInsumo,
+                    salvo: true,
+            };
+    
+            setEditando(false)
+            setIngredienteCobertura(updatedIngredienteCobertura)
+            setId(id + 1)
+            setErrorSalvar('')
+        } else if(massa == 'recheio'){
+            const insumoCadastrado = produtos.find(produto => {
+                return uid === produto.uid &&  itemSelecionado === produto.produto
+            })
+    
+            if (!insumoCadastrado) {
+                console.error("Produto não encontrado!");
+                return;
+            }
+    
+            const preçoPorInsumo = (quantidadeMassa * insumoCadastrado.preçoCompra) / insumoCadastrado.pesoEmbalagem
+    
+            const updatedIngredienteRecheio = [...ingredienteRecheio];
+                updatedIngredienteRecheio[index] = {
+                    id: id,
+                    produto: itemSelecionado,
+                    quantidade: quantidadeMassa,
+                    preçoDeCustoReceita: preçoPorInsumo,
+                    salvo: true,
+            };
+    
+            setEditando(false)
+            setIngredienteRecheio(updatedIngredienteRecheio)
+            setId(id + 1)
+            setErrorSalvar('')
         }
-
-        const preçoPorInsumo = (quantidadeMassa * insumoCadastrado.preçoCompra) / insumoCadastrado.pesoEmbalagem
-
-        const updatedIngredienteMassa = [...ingredienteMassa];
-            updatedIngredienteMassa[index] = {
-                id: id,
-                produto: itemSelecionado,
-                quantidade: quantidadeMassa,
-                preçoDeCustoReceita: preçoPorInsumo,
-                salvo: true,
-        };
-
-        setEditando(false)
-        setIngredienteMassa(updatedIngredienteMassa)
-        setId(id + 1)
-        setErrorSalvar('')
     };
 
     const editProduto = (ingrediente, index) => {
@@ -195,12 +247,12 @@ const PedidosCreate = () => {
                                         <td>
                                             {ingrediente && !ingrediente.salvo ?
                                                 (<>
-                                                    <button id='btn-save' onClick={() => handleProduto(index)}>Salvar</button>
+                                                    <button id='btn-save' onClick={() => handleProduto(massa, index)}>Salvar</button>
                                                     <button id='btn-del' onClick={() => delProdutos(ingrediente)}>Excluir</button>
                                                 </>)
                                                 :
                                                 (<>
-                                                    <button id='btn' onClick={() => editProduto(ingrediente, index)}>Editar</button>
+                                                    <button id='btn' onClick={() => editProduto(ingrediente, massa, index)}>Editar</button>
                                                     <button id='btn-del' onClick={() => delProdutos(ingrediente)}>Excluir</button>
                                                 </>)
                                             }
@@ -274,7 +326,7 @@ const PedidosCreate = () => {
                                         <td>
                                             {ingrediente && !ingrediente.salvo ?
                                                 (<>
-                                                    <button id='btn-save' onClick={() => handleProduto(index)}>Salvar</button>
+                                                    <button id='btn-save' onClick={() => handleProduto(recheio, index)}>Salvar</button>
                                                     <button id='btn-del' onClick={() => delProdutos(ingrediente)}>Excluir</button>
                                                 </>)
                                                 :
@@ -289,7 +341,6 @@ const PedidosCreate = () => {
                             </tbody>
                         </table>
                         <div className={style.adicionar_pedido}>
-                            <span>Valor total</span>
                             <button onClick={() => setCountRecheio(countRecheio + 1)}>Adicionar Ingrediente</button>
                         </div>
                     </form>
@@ -314,7 +365,7 @@ const PedidosCreate = () => {
                                 </tr>
                             </thead>
                             <tbody>
-                            {ingredienteMassa.map((ingrediente, index) => (
+                            {ingredienteCobertura.map((ingrediente, index) => (
                                     <tr key={ingrediente.id}>
                                         <td>
                                             {ingrediente && !ingrediente.salvo ?
@@ -353,7 +404,7 @@ const PedidosCreate = () => {
                                         <td>
                                             {ingrediente && !ingrediente.salvo ?
                                                 (<>
-                                                    <button id='btn-save' onClick={() => handleProduto(index)}>Salvar</button>
+                                                    <button id='btn-save' onClick={() => handleProduto(cobertura, index)}>Salvar</button>
                                                     <button id='btn-del' onClick={() => delProdutos(ingrediente)}>Excluir</button>
                                                 </>)
                                                 :
@@ -368,7 +419,6 @@ const PedidosCreate = () => {
                             </tbody>
                         </table>
                         <div className={style.adicionar_pedido}>
-                            <span>Valor total</span>
                             <button onClick={() => setCountCobertura(countCobertura + 1)}>Adicionar Ingrediente</button>
                         </div>
                     </form>
