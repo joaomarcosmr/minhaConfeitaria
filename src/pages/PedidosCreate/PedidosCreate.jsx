@@ -33,7 +33,7 @@ const PedidosCreate = () => {
     const recheio = 'recheio'
     
     const adicionarIngrediente = (sessao) => {
-        if(sessao = massa){
+        if(sessao == massa){
             const todosSalvos = ingredienteMassa.every(item => item.salvo);
             if (todosSalvos === true && !editando){
                 setIngredienteMassa([...ingredienteMassa, {id: id, produto: '', quantidade: 0, preçoDeCustoReceita: 0, salvo: false }]);
@@ -43,7 +43,7 @@ const PedidosCreate = () => {
             } else {
                 setErrorSalvar('É necessário salvar o ingrediente primeiro')
             }
-        } else if(sessao = recheio){
+        } else if(sessao == recheio){
             const todosSalvos = ingredienteRecheio.every(item => item.salvo);
             if (todosSalvos === true && !editando){
                 setIngredienteRecheio([...ingredienteRecheio, {id: id, produto: '', quantidade: 0, preçoDeCustoReceita: 0, salvo: false }]);
@@ -53,7 +53,7 @@ const PedidosCreate = () => {
             } else {
                 setErrorSalvar('É necessário salvar o ingrediente primeiro')
             }
-        } else if(sessao = cobertura){
+        } else if(sessao == cobertura){
             const todosSalvos = ingredienteCobertura.every(item => item.salvo);
             if (todosSalvos === true && !editando){
                 setIngredienteCobertura([...ingredienteCobertura, {id: id, produto: '', quantidade: 0, preçoDeCustoReceita: 0, salvo: false }]);
