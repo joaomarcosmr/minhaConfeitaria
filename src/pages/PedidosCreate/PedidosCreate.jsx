@@ -16,10 +16,12 @@ const PedidosCreate = () => {
     const [descricao, setDescricao] = useState('')
     const [errorSalvar, setErrorSalvar] = useState('')
     const [quantidadeMassa, setQuantidadeMassa] = useState(0)
-    const [id, setId] = useState(0)
-    const [ingredienteMassa, setIngredienteMassa] = useState([{id: id, produto: '', quantidade: 0, preçoDeCustoReceita: 0, salvo: false }])
-    const [ingredienteRecheio, setIngredienteRecheio] = useState([{id: id, produto: '', quantidade: 0, preçoDeCustoReceita: 0, salvo: false }])
-    const [ingredienteCobertura, setIngredienteCobertura] = useState([{id: id, produto: '', quantidade: 0, preçoDeCustoReceita: 0, salvo: false }])
+    const [idMassa, setIdMassa] = useState(0)
+    const [idRecheio, setIdRecheio] = useState(0)
+    const [idCobertura, setIdCobertura] = useState(0)
+    const [ingredienteMassa, setIngredienteMassa] = useState([{id: idMassa, produto: '', quantidade: 0, preçoDeCustoReceita: 0, salvo: false }])
+    const [ingredienteRecheio, setIngredienteRecheio] = useState([{id: idRecheio, produto: '', quantidade: 0, preçoDeCustoReceita: 0, salvo: false }])
+    const [ingredienteCobertura, setIngredienteCobertura] = useState([{id: idCobertura, produto: '', quantidade: 0, preçoDeCustoReceita: 0, salvo: false }])
     const [countMassa, setCountMassa] = useState(1)
     const [countRecheio, setCountRecheio] = useState(1)
     const [countCobertura, setCountCobertura] = useState(1)
@@ -36,7 +38,7 @@ const PedidosCreate = () => {
         if(sessao == massa){
             const todosSalvos = ingredienteMassa.every(item => item.salvo);
             if (todosSalvos === true && !editando){
-                setIngredienteMassa([...ingredienteMassa, {id: id, produto: '', quantidade: 0, preçoDeCustoReceita: 0, salvo: false }]);
+                setIngredienteMassa([...ingredienteMassa, {id: idMassa, produto: '', quantidade: 0, preçoDeCustoReceita: 0, salvo: false }]);
                 setItemSelecionado('')
                 setQuantidadeMassa(0);
                 setErrorSalvar('')
@@ -46,7 +48,7 @@ const PedidosCreate = () => {
         } else if(sessao == recheio){
             const todosSalvos = ingredienteRecheio.every(item => item.salvo);
             if (todosSalvos === true && !editando){
-                setIngredienteRecheio([...ingredienteRecheio, {id: id, produto: '', quantidade: 0, preçoDeCustoReceita: 0, salvo: false }]);
+                setIngredienteRecheio([...ingredienteRecheio, {id: idRecheio, produto: '', quantidade: 0, preçoDeCustoReceita: 0, salvo: false }]);
                 setItemSelecionado('')
                 setQuantidadeMassa(0);
                 setErrorSalvar('')
@@ -56,7 +58,7 @@ const PedidosCreate = () => {
         } else if(sessao == cobertura){
             const todosSalvos = ingredienteCobertura.every(item => item.salvo);
             if (todosSalvos === true && !editando){
-                setIngredienteCobertura([...ingredienteCobertura, {id: id, produto: '', quantidade: 0, preçoDeCustoReceita: 0, salvo: false }]);
+                setIngredienteCobertura([...ingredienteCobertura, {id: idCobertura, produto: '', quantidade: 0, preçoDeCustoReceita: 0, salvo: false }]);
                 setItemSelecionado('')
                 setQuantidadeMassa(0);
                 setErrorSalvar('')
@@ -64,6 +66,8 @@ const PedidosCreate = () => {
                 setErrorSalvar('É necessário salvar o ingrediente primeiro')
             }
         }
+
+        console.log(ingredienteCobertura, ingredienteMassa, ingredienteRecheio)
     };
 
     const handleProduto = (sessao, index) => {
@@ -81,7 +85,7 @@ const PedidosCreate = () => {
     
             const updatedIngredienteMassa = [...ingredienteMassa];
                 updatedIngredienteMassa[index] = {
-                    id: id,
+                    id: idMassa,
                     produto: itemSelecionado,
                     quantidade: quantidadeMassa,
                     preçoDeCustoReceita: preçoPorInsumo,
@@ -90,7 +94,7 @@ const PedidosCreate = () => {
     
             setEditando(false)
             setIngredienteMassa(updatedIngredienteMassa)
-            setId(id + 1)
+            setIdMassa(idMassa + 1)
             setErrorSalvar('')
         } else if(sessao == cobertura){
             const insumoCadastrado = produtos.find(produto => {
@@ -106,7 +110,7 @@ const PedidosCreate = () => {
     
             const updatedIngredienteCobertura = [...ingredienteCobertura];
                 updatedIngredienteCobertura[index] = {
-                    id: id,
+                    id: idCobertura,
                     produto: itemSelecionado,
                     quantidade: quantidadeMassa,
                     preçoDeCustoReceita: preçoPorInsumo,
@@ -115,7 +119,7 @@ const PedidosCreate = () => {
     
             setEditando(false)
             setIngredienteCobertura(updatedIngredienteCobertura)
-            setId(id + 1)
+            setIdCobertura(idCobertura + 1)
             setErrorSalvar('')
         } else if(sessao == recheio){
             const insumoCadastrado = produtos.find(produto => {
@@ -131,7 +135,7 @@ const PedidosCreate = () => {
     
             const updatedIngredienteRecheio = [...ingredienteRecheio];
                 updatedIngredienteRecheio[index] = {
-                    id: id,
+                    id: idRecheio,
                     produto: itemSelecionado,
                     quantidade: quantidadeMassa,
                     preçoDeCustoReceita: preçoPorInsumo,
@@ -140,7 +144,7 @@ const PedidosCreate = () => {
     
             setEditando(false)
             setIngredienteRecheio(updatedIngredienteRecheio)
-            setId(id + 1)
+            setIdRecheio(idRecheio + 1)
             setErrorSalvar('')
         }
     };
@@ -150,14 +154,12 @@ const PedidosCreate = () => {
         const todosSalvos = ingredienteMassa.every(item => item.salvo);
 
         if(todosSalvos){
-            console.log('ok')
-
             setItemSelecionado(ingrediente.produto)
             setQuantidadeMassa(ingrediente.quantidade)
 
             const updatedIngredienteMassa = [...ingredienteMassa];
             updatedIngredienteMassa[index] = {
-                id: id,
+                id: idMassa,
                 produto: itemSelecionado,
                 quantidade: quantidadeMassa,
                 preçoDeCustoReceita: 0,
