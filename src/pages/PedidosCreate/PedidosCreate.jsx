@@ -16,15 +16,14 @@ const PedidosCreate = () => {
     const [descricao, setDescricao] = useState('')
     const [errorSalvar, setErrorSalvar] = useState('')
     const [quantidadeMassa, setQuantidadeMassa] = useState(0)
+    const [maoDeObra, setMaoDeObra] = useState(0)
+    const [custoEmbalagem, setCustoEmbalagem] = useState(0)
     const [idMassa, setIdMassa] = useState(0)
     const [idRecheio, setIdRecheio] = useState(0)
     const [idCobertura, setIdCobertura] = useState(0)
     const [ingredienteMassa, setIngredienteMassa] = useState([{id: idMassa, produto: '', quantidade: 0, preçoDeCustoReceita: 0, salvo: false }])
     const [ingredienteRecheio, setIngredienteRecheio] = useState([{id: idRecheio, produto: '', quantidade: 0, preçoDeCustoReceita: 0, salvo: false }])
     const [ingredienteCobertura, setIngredienteCobertura] = useState([{id: idCobertura, produto: '', quantidade: 0, preçoDeCustoReceita: 0, salvo: false }])
-    const [countMassa, setCountMassa] = useState(1)
-    const [countRecheio, setCountRecheio] = useState(1)
-    const [countCobertura, setCountCobertura] = useState(1)
 
     const { user } = useAuthValue()
     const uid = user.uid
@@ -66,8 +65,6 @@ const PedidosCreate = () => {
                 setErrorSalvar('É necessário salvar o ingrediente primeiro')
             }
         }
-
-        console.log(ingredienteCobertura, ingredienteMassa, ingredienteRecheio)
     };
 
     const handleProduto = (sessao, index) => {
@@ -149,32 +146,79 @@ const PedidosCreate = () => {
         }
     };
 
-    const editProduto = (ingrediente, index) => {
+    const editProduto = (ingrediente, sessao, index) => {
+        if(sessao == massa){
+            const todosSalvos = ingredienteMassa.every(item => item.salvo);
 
-        const todosSalvos = ingredienteMassa.every(item => item.salvo);
+            if(todosSalvos){
+                setItemSelecionado(ingrediente.produto)
+                setQuantidadeMassa(ingrediente.quantidade)
+    
+                const updatedIngredienteMassa = [...ingredienteMassa];
+                updatedIngredienteMassa[index] = {
+                    id: idMassa,
+                    produto: itemSelecionado,
+                    quantidade: quantidadeMassa,
+                    preçoDeCustoReceita: 0,
+                    salvo: false,
+                };
+    
+                setIngredienteMassa(updatedIngredienteMassa)
+                setEditando(true)
+            }
+        } else if (sessao == recheio){
+            const todosSalvos = ingredienteRecheio.every(item => item.salvo);
 
-        if(todosSalvos){
-            setItemSelecionado(ingrediente.produto)
-            setQuantidadeMassa(ingrediente.quantidade)
+            if(todosSalvos){
+                setItemSelecionado(ingrediente.produto)
+                setQuantidadeMassa(ingrediente.quantidade)
+    
+                const updatedIngredienteRecheio = [...ingredienteRecheio];
+                updatedIngredienteRecheio[index] = {
+                    id: idRecheio,
+                    produto: itemSelecionado,
+                    quantidade: quantidadeMassa,
+                    preçoDeCustoReceita: 0,
+                    salvo: false,
+                };
+    
+                setIngredienteRecheio(updatedIngredienteRecheio)
+                setEditando(true)
+            }
+        } else if (sessao == cobertura){
+            const todosSalvos = ingredienteCobertura.every(item => item.salvo);
 
-            const updatedIngredienteMassa = [...ingredienteMassa];
-            updatedIngredienteMassa[index] = {
-                id: idMassa,
-                produto: itemSelecionado,
-                quantidade: quantidadeMassa,
-                preçoDeCustoReceita: 0,
-                salvo: false,
-            };
-
-            setIngredienteMassa(updatedIngredienteMassa)
-            setEditando(true)
+            if(todosSalvos){
+                setItemSelecionado(ingrediente.produto)
+                setQuantidadeCobertura(ingrediente.quantidade)
+    
+                const updatedIngredienteCobertura = [...ingredienteCobertura];
+                updatedIngredienteCobertura[index] = {
+                    id: idCobertura,
+                    produto: itemSelecionado,
+                    quantidade: quantidadeMassa,
+                    preçoDeCustoReceita: 0,
+                    salvo: false,
+                };
+    
+                setIngredienteCobertura(updatedIngredienteCobertura)
+                setEditando(true)
+            }
         }
 
     }
 
-    const delProdutos = (ingrediente) => {
-        const novoArray = ingredienteMassa.filter(item => item !== ingrediente);
-        setIngredienteMassa(novoArray);
+    const delProdutos = (ingrediente, sessao) => { 
+        if(sessao == massa){
+            const novoArray = ingredienteMassa.filter(item => item !== ingrediente);
+            setIngredienteMassa(novoArray);
+        } else if(sessao == recheio){
+            const novoArray = ingredienteRecheio.filter(item => item !== ingrediente);
+            setIngredienteRecheio(novoArray);
+        } else if (sessao == cobertura){
+            const novoArray = ingredienteCobertura.filter(item => item !== ingrediente);
+            setIngredienteCobertura(novoArray);
+        }
     }
 
     const handleSubmit = (e) => {
@@ -276,12 +320,12 @@ const PedidosCreate = () => {
                                             {ingrediente && !ingrediente.salvo ?
                                                 (<>
                                                     <button id='btn-save' onClick={() => handleProduto(massa, index)}>Salvar</button>
-                                                    <button id='btn-del' onClick={() => delProdutos(ingrediente)}>Excluir</button>
+                                                    <button id='btn-del' onClick={() => delProdutos(ingrediente, massa)}>Excluir</button>
                                                 </>)
                                                 :
                                                 (<>
                                                     <button id='btn' onClick={() => editProduto(ingrediente, massa, index)}>Editar</button>
-                                                    <button id='btn-del' onClick={() => delProdutos(ingrediente)}>Excluir</button>
+                                                    <button id='btn-del' onClick={() => delProdutos(ingrediente, massa)}>Excluir</button>
                                                 </>)
                                             }
                                         </td>
@@ -355,12 +399,12 @@ const PedidosCreate = () => {
                                             {ingrediente && !ingrediente.salvo ?
                                                 (<>
                                                     <button id='btn-save' onClick={() => handleProduto(recheio, index)}>Salvar</button>
-                                                    <button id='btn-del' onClick={() => delProdutos(ingrediente)}>Excluir</button>
+                                                    <button id='btn-del' onClick={() => delProdutos(ingrediente, recheio)}>Excluir</button>
                                                 </>)
                                                 :
                                                 (<>
-                                                    <button id='btn' onClick={() => editProduto(ingrediente, index)}>Editar</button>
-                                                    <button id='btn-del' onClick={() => delProdutos(ingrediente)}>Excluir</button>
+                                                    <button id='btn' onClick={() => editProduto(ingrediente, recheio, index)}>Editar</button>
+                                                    <button id='btn-del' onClick={() => delProdutos(ingrediente, recheio)}>Excluir</button>
                                                 </>)
                                             }
                                         </td>
@@ -434,12 +478,12 @@ const PedidosCreate = () => {
                                             {ingrediente && !ingrediente.salvo ?
                                                 (<>
                                                     <button id='btn-save' onClick={() => handleProduto(cobertura, index)}>Salvar</button>
-                                                    <button id='btn-del' onClick={() => delProdutos(ingrediente)}>Excluir</button>
+                                                    <button id='btn-del' onClick={() => delProdutos(ingrediente, cobertura)}>Excluir</button>
                                                 </>)
                                                 :
                                                 (<>
-                                                    <button id='btn' onClick={() => editProduto(ingrediente, index)}>Editar</button>
-                                                    <button id='btn-del' onClick={() => delProdutos(ingrediente)}>Excluir</button>
+                                                    <button id='btn' onClick={() => editProduto(ingrediente, cobertura, index)}>Editar</button>
+                                                    <button id='btn-del' onClick={() => delProdutos(ingrediente, cobertura)}>Excluir</button>
                                                 </>)
                                             }
                                         </td>
@@ -466,22 +510,22 @@ const PedidosCreate = () => {
                     <form onSubmit={handleSubmit}>
                         <label>
                             <span>Precifique sua mão de obra</span>
-                            <input type="text" className={style.input_form}/>
+                            <input type="text" className={style.input_form} onChange={(e) => setMaoDeObra(e.target.value)}/>
                         </label>
                         <label>
                             <span>Custo de Embalagem</span>
-                            <input type="text" className={style.input_form}/>
+                            <input type="text" className={style.input_form} onChange={(e) => setCustoEmbalagem(e.target.value)}/>
                         </label>
-                        <label>
-                            <span>Custos Fixos Cadastrados</span>
-                            <input type="text" className={style.input_form}/>
+                        <label className="">
+                            <p>Valor total de custo:</p>
+                            <input type="text" disabled className={style.input_form_metade} value={massa}/>
+                        </label>
+                        <label className="">
+                            <p>Valor Final para Cliente com Mão de Obra:</p>
+                            <input type="text" disabled className={style.input_form_metade} value={massa}/>
                         </label>
                     </form>
                 </div>
-            </div>
-            <div className={style.adicionar_pedido}>
-                <span>Valor total</span>
-                <button>Alterar</button>
             </div>
         </div>
     </div>
