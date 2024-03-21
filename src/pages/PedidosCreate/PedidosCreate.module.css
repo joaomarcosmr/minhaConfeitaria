@@ -66,16 +66,22 @@
 
 .input_form_metade{
     font-family: 'Montserrat', sans-serif;
-    width: 50%;
+    width: 60%;
     padding: 6px;
     border-radius: 5px;
     border: 1px solid rgba(190, 189, 189);
     margin-top: 6px;
+    margin-right: 40px;
     margin-bottom: 20px;
 }
 
-.metade{
-    width: 50%;
+.labelsContainer {
+    display: flex;
+    justify-content: space-between;
+}
+
+.labelsContainer p{
+    margin-top: 15px;
 }
 
 .table{

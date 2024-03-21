@@ -18,9 +18,12 @@ const PedidosCreate = () => {
     const [quantidadeMassa, setQuantidadeMassa] = useState(0)
     const [maoDeObra, setMaoDeObra] = useState(0)
     const [custoEmbalagem, setCustoEmbalagem] = useState(0)
+    const [custoFrete, setCustoFrete] = useState(0)
     const [idMassa, setIdMassa] = useState(0)
     const [idRecheio, setIdRecheio] = useState(0)
     const [idCobertura, setIdCobertura] = useState(0)
+    const [custoObra, setCustoObra] = useState(0)
+    const [custoFinal, setCustoFinal] = useState(0)
     const [ingredienteMassa, setIngredienteMassa] = useState([{id: idMassa, produto: '', quantidade: 0, preçoDeCustoReceita: 0, salvo: false }])
     const [ingredienteRecheio, setIngredienteRecheio] = useState([{id: idRecheio, produto: '', quantidade: 0, preçoDeCustoReceita: 0, salvo: false }])
     const [ingredienteCobertura, setIngredienteCobertura] = useState([{id: idCobertura, produto: '', quantidade: 0, preçoDeCustoReceita: 0, salvo: false }])
@@ -219,6 +222,25 @@ const PedidosCreate = () => {
             const novoArray = ingredienteCobertura.filter(item => item !== ingrediente);
             setIngredienteCobertura(novoArray);
         }
+    }
+
+    const calcularPreço = () => {
+        let somaPreços = 0;
+        for(let i = 0; i < ingredienteMassa.length; i++){
+            somaPreços += ingredienteMassa[i].preçoDeCustoReceita
+        }
+        for(let i = 0; i < ingredienteRecheio.length; i++){
+            somaPreços += ingredienteMassa[i].preçoDeCustoReceita
+        }
+        for(let i = 0; i < ingredienteCobertura.length; i++){
+            somaPreços += ingredienteMassa[i].preçoDeCustoReceita
+        }
+
+        setCustoObra(somaPreços)
+        somaPreços = somaPreços * (maoDeObra/100 + 1)
+        setCustoFinal(somaPreços)
+        console.log(somaPreços)
+
     }
 
     const handleSubmit = (e) => {
@@ -509,21 +531,29 @@ const PedidosCreate = () => {
                 <div className={style.form}>
                     <form onSubmit={handleSubmit}>
                         <label>
-                            <span>Precifique sua mão de obra</span>
+                            <span>Precifique sua mão de obra em %</span>
                             <input type="text" className={style.input_form} onChange={(e) => setMaoDeObra(e.target.value)}/>
                         </label>
                         <label>
                             <span>Custo de Embalagem</span>
                             <input type="text" className={style.input_form} onChange={(e) => setCustoEmbalagem(e.target.value)}/>
                         </label>
-                        <label className="">
+                        <label>
+                            <span>Custo Frete</span>
+                            <input type="text" className={style.input_form} onChange={(e) => setCustoFrete(e.target.value)}/>
+                        </label>
+                        <label className={style.labelsContainer}>
                             <p>Valor total de custo:</p>
-                            <input type="text" disabled className={style.input_form_metade} value={massa}/>
+                            <input type="text" disabled className={style.input_form_metade} value={"R$ " + custoObra}/>
                         </label>
-                        <label className="">
+                        <label className={style.labelsContainer}>
                             <p>Valor Final para Cliente com Mão de Obra:</p>
-                            <input type="text" disabled className={style.input_form_metade} value={massa}/>
+                            <input type="text" disabled className={style.input_form_metade} value={"R$ " + custoFinal}/>
                         </label>
+                        <div className={style.adicionar_pedido}>
+                            <button onClick={() => calcularPreço()}>Calcular Preço</button>
+                            {errorSalvar.length > 0 && <p className='error'>{errorSalvar}</p>}
+                        </div>
                     </form>
                 </div>
             </div>
