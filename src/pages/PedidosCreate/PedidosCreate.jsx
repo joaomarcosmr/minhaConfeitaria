@@ -236,15 +236,26 @@ const PedidosCreate = () => {
             somaPreços += ingredienteMassa[i].preçoDeCustoReceita
         }
 
-        setCustoObra(somaPreços)
-        somaPreços = somaPreços * (maoDeObra/100 + 1)
+        setCustoObra(somaPreços + custoEmbalagem + custoFrete)
+        somaPreços = somaPreços * (maoDeObra/100 + 1) + custoEmbalagem + custoFrete
         setCustoFinal(somaPreços)
-        console.log(somaPreços)
-
     }
 
     const handleSubmit = (e) => {
         e.preventDefault()
+
+        const orçamentoPedido = {
+            nomeCliente: nome,
+            telefoneCliente: telefone,
+            emailCliente: email,
+            descricaoPedido: descricao,
+            ingredientesDaMassa: ingredienteMassa,
+            ingredientesDoRecheio: ingredienteRecheio,
+            ingredientesDaCobertura: ingredienteCobertura,
+            preçoDeCustoPedido: custoObra,
+            preçoDeCustoMaoDeObra: maoDeObra,
+            preçoFinalPedido: custoFinal
+        }
     }
 
   return (
@@ -531,16 +542,16 @@ const PedidosCreate = () => {
                 <div className={style.form}>
                     <form onSubmit={handleSubmit}>
                         <label>
-                            <span>Precifique sua mão de obra em %</span>
-                            <input type="text" className={style.input_form} onChange={(e) => setMaoDeObra(e.target.value)}/>
-                        </label>
-                        <label>
                             <span>Custo de Embalagem</span>
-                            <input type="text" className={style.input_form} onChange={(e) => setCustoEmbalagem(e.target.value)}/>
+                            <input type="number" className={style.input_form} onChange={(e) => setCustoEmbalagem(e.target.value)} placeholder='Ex: 30'/>
                         </label>
                         <label>
                             <span>Custo Frete</span>
-                            <input type="text" className={style.input_form} onChange={(e) => setCustoFrete(e.target.value)}/>
+                            <input type="number" className={style.input_form} onChange={(e) => setCustoFrete(e.target.value)} placeholder='Ex: 20'/>
+                        </label>
+                        <label>
+                            <span>Precifique sua mão de obra em %</span>
+                            <input type="number" className={style.input_form} onChange={(e) => setMaoDeObra(e.target.value)} placeholder='É em %, mas digite apenas números. Ex: 80'/>
                         </label>
                         <label className={style.labelsContainer}>
                             <p>Valor total de custo:</p>
