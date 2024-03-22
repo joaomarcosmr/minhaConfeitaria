@@ -2,7 +2,9 @@ import React from 'react'
 import { useState, useEffect } from 'react'
 import style from './PedidosCreate.module.css'
 import { Link } from 'react-router-dom'
+import { useCreateProduct } from '../../hooks/useCreateProduct'
 import { useDocuments } from '../../hooks/useDocuments'
+import { useNavigate } from 'react-router'
 import { useAuthValue } from '../../context/authContext'
 
 const PedidosCreate = () => {
@@ -31,6 +33,8 @@ const PedidosCreate = () => {
     const { user } = useAuthValue()
     const uid = user.uid
     const { documents: produtos, loading, error } = useDocuments('produtos')
+    const { insertDocument, response } = useCreateProduct('pedidos')
+    const navigate = useNavigate()
 
     const massa = 'massa';
     const cobertura = 'cobertura'
@@ -241,8 +245,8 @@ const PedidosCreate = () => {
         setCustoFinal(somaPreços)
     }
 
-    const handleSubmit = (e) => {
-        e.preventDefault()
+    const handleSubmit = () => {
+        // problema de toda vez que aperta num botão ele atualiza a página
 
         const orçamentoPedido = {
             nomeCliente: nome,
@@ -256,13 +260,17 @@ const PedidosCreate = () => {
             preçoDeCustoMaoDeObra: maoDeObra,
             preçoFinalPedido: custoFinal
         }
+
+        insertDocument(orçamentoPedido)
+        console.log(response.error)
+        navigate('/')
     }
 
   return (
     <div className={style.criar_pedido}>
         <div className={style.criar_pedidos_head}>
           <h3><Link to=''>(seta pra trás)</Link> Crie um Novo Pedido</h3>
-          <Link to=''><button className='btn'>Salvar Pedido</button></Link>
+          <button className='btn' onClick={() => handleSubmit}>Salvar Pedido</button>
         </div>
 
         {/* SESSÃO DE CLIENTE */}
@@ -273,7 +281,7 @@ const PedidosCreate = () => {
                     <p>Faça o cadastro do seu cliente, coloque o máximo de informações possível. Caso não tenha todos os dados, pode deixar o campo em branco.</p>
                 </div>
                 <div className={style.form}>
-                    <form onSubmit={handleSubmit}>
+                    <form>
                         <label>
                             <span>Nome</span>
                             <input type="text"className={style.input_form} onChange={(e) => setNome(e.target.value)}/>
@@ -303,7 +311,7 @@ const PedidosCreate = () => {
                     <p>Coloque os ingredientes utilizados e suas proporções, lembre-se que para aparecer os ingredientes aqui você deve cadastra-los na aba Produtos (para saber mais clique aqui)</p>
                 </div>
                 <div className={style.form}>
-                    <form onSubmit={handleSubmit}>
+                    <form>
                         <table className={style.table}>
                             <thead>
                                 <tr>
@@ -382,7 +390,7 @@ const PedidosCreate = () => {
                     <p>Coloque os ingredientes utilizados e suas proporções, lembre-se que para aparecer os ingredientes aqui você deve cadastra-los na aba Produtos (para saber mais clique aqui)</p>
                 </div>
                 <div className={style.form}>
-                    <form onSubmit={handleSubmit}>
+                    <form>
                         <table className={style.table}>
                             <thead>
                                 <tr>
@@ -461,7 +469,7 @@ const PedidosCreate = () => {
                     <p>Coloque os ingredientes utilizados e suas proporções, lembre-se que para aparecer os ingredientes aqui você deve cadastra-los na aba Produtos (para saber mais clique aqui)</p>
                 </div>
                 <div className={style.form}>
-                    <form onSubmit={handleSubmit}>
+                    <form>
                         <table className={style.table}>
                             <thead>
                                 <tr>
@@ -540,7 +548,7 @@ const PedidosCreate = () => {
                     <p>Reveja todas informaçoes da sua precificação antes de salvar, caso tenha que mudar algo.</p>
                 </div>
                 <div className={style.form}>
-                    <form onSubmit={handleSubmit}>
+                    <form>
                         <label>
                             <span>Custo de Embalagem</span>
                             <input type="number" className={style.input_form} onChange={(e) => setCustoEmbalagem(e.target.value)} placeholder='Ex: 30'/>
