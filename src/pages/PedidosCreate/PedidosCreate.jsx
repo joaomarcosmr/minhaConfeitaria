@@ -11,6 +11,7 @@ const PedidosCreate = () => {
 
     const [salvo, setSalvo] = useState(false)
     const [editando, setEditando] = useState(false)
+    const [certo, setCerto] = useState(true)
     const [nome, setNome] = useState('')
     const [telefone, setTelefone] = useState('')
     const [email, setEmail] = useState('')
@@ -231,23 +232,27 @@ const PedidosCreate = () => {
     const calcularPreço = () => {
         let somaPreços = 0;
         for(let i = 0; i < ingredienteMassa.length; i++){
-            somaPreços += ingredienteMassa[i].preçoDeCustoReceita
+            somaPreços += Number(ingredienteMassa[i].preçoDeCustoReceita)
         }
         for(let i = 0; i < ingredienteRecheio.length; i++){
-            somaPreços += ingredienteMassa[i].preçoDeCustoReceita
+            somaPreços += Number(ingredienteMassa[i].preçoDeCustoReceita)
         }
         for(let i = 0; i < ingredienteCobertura.length; i++){
-            somaPreços += ingredienteMassa[i].preçoDeCustoReceita
+            somaPreços += Number(ingredienteMassa[i].preçoDeCustoReceita)
         }
 
-        setCustoObra(somaPreços + custoEmbalagem + custoFrete)
-        somaPreços = somaPreços * (maoDeObra/100 + 1) + custoEmbalagem + custoFrete
-        setCustoFinal(somaPreços)
+        const preçoCustoObra = somaPreços + Number(custoEmbalagem);
+        const preçoVendaObra = Math.ceil((preçoCustoObra) * (maoDeObra/100 + 1) + Number(custoFrete)) - 0.1
+
+        setCustoObra(preçoCustoObra)
+        setCustoFinal(preçoVendaObra)
     }
 
-    const handleSubmit = () => {
-        // problema de toda vez que aperta num botão ele atualiza a página
+    const handleSubmit = (e) => {
+        e.preventDefault()
+    }
 
+    const salvarPedido = () => {
         const orçamentoPedido = {
             nomeCliente: nome,
             telefoneCliente: telefone,
@@ -258,7 +263,9 @@ const PedidosCreate = () => {
             ingredientesDaCobertura: ingredienteCobertura,
             preçoDeCustoPedido: custoObra,
             preçoDeCustoMaoDeObra: maoDeObra,
-            preçoFinalPedido: custoFinal
+            preçoFinalPedido: custoFinal,
+            uid: user.uid,
+            createdBy: user.displayName
         }
 
         insertDocument(orçamentoPedido)
@@ -270,7 +277,7 @@ const PedidosCreate = () => {
     <div className={style.criar_pedido}>
         <div className={style.criar_pedidos_head}>
           <h3><Link to=''>(seta pra trás)</Link> Crie um Novo Pedido</h3>
-          <button className='btn' onClick={() => handleSubmit}>Salvar Pedido</button>
+          <button className='btn' onClick={salvarPedido}>Salvar Pedido</button>
         </div>
 
         {/* SESSÃO DE CLIENTE */}
@@ -311,7 +318,7 @@ const PedidosCreate = () => {
                     <p>Coloque os ingredientes utilizados e suas proporções, lembre-se que para aparecer os ingredientes aqui você deve cadastra-los na aba Produtos (para saber mais clique aqui)</p>
                 </div>
                 <div className={style.form}>
-                    <form>
+                    <form onSubmit={handleSubmit}>
                         <table className={style.table}>
                             <thead>
                                 <tr>
@@ -390,7 +397,7 @@ const PedidosCreate = () => {
                     <p>Coloque os ingredientes utilizados e suas proporções, lembre-se que para aparecer os ingredientes aqui você deve cadastra-los na aba Produtos (para saber mais clique aqui)</p>
                 </div>
                 <div className={style.form}>
-                    <form>
+                    <form onSubmit={handleSubmit}>
                         <table className={style.table}>
                             <thead>
                                 <tr>
@@ -469,7 +476,7 @@ const PedidosCreate = () => {
                     <p>Coloque os ingredientes utilizados e suas proporções, lembre-se que para aparecer os ingredientes aqui você deve cadastra-los na aba Produtos (para saber mais clique aqui)</p>
                 </div>
                 <div className={style.form}>
-                    <form>
+                    <form onSubmit={handleSubmit}>
                         <table className={style.table}>
                             <thead>
                                 <tr>
@@ -548,18 +555,18 @@ const PedidosCreate = () => {
                     <p>Reveja todas informaçoes da sua precificação antes de salvar, caso tenha que mudar algo.</p>
                 </div>
                 <div className={style.form}>
-                    <form>
+                    <form onSubmit={handleSubmit}> 
                         <label>
                             <span>Custo de Embalagem</span>
-                            <input type="number" className={style.input_form} onChange={(e) => setCustoEmbalagem(e.target.value)} placeholder='Ex: 30'/>
+                            <input type="number" className={style.input_form} onChange={(e) => setCustoEmbalagem(Number(e.target.value))} placeholder='Ex: 30'/>
                         </label>
                         <label>
                             <span>Custo Frete</span>
-                            <input type="number" className={style.input_form} onChange={(e) => setCustoFrete(e.target.value)} placeholder='Ex: 20'/>
+                            <input type="number" className={style.input_form} onChange={(e) => setCustoFrete(Number(e.target.value))} placeholder='Ex: 20'/>
                         </label>
                         <label>
                             <span>Precifique sua mão de obra em %</span>
-                            <input type="number" className={style.input_form} onChange={(e) => setMaoDeObra(e.target.value)} placeholder='É em %, mas digite apenas números. Ex: 80'/>
+                            <input type="number" className={style.input_form} onChange={(e) => setMaoDeObra(Number(e.target.value))} placeholder='É em %, mas digite apenas números. Ex: 80'/>
                         </label>
                         <label className={style.labelsContainer}>
                             <p>Valor total de custo:</p>
