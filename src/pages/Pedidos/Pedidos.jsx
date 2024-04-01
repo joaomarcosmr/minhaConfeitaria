@@ -1,9 +1,15 @@
 import React from 'react'
 import style from './Pedidos.module.css'
-
+import { useAuthValue } from '../../context/authContext'
+import { useDocuments } from '../../hooks/useDocuments'
 import { Link } from 'react-router-dom'
 
 const Pedidos = () => {
+
+const { user } = useAuthValue()
+const uid = user.uid
+const { documents: pedido, loading, error } = useDocuments('pedidos')
+
   return (
     <div className={style.pedidos}>
       <div className={style.pedidos_head}>
@@ -19,25 +25,24 @@ const Pedidos = () => {
       
       <table>
         <thead>
-         {/* <div>
-            <p>Seus Pedidos</p>
-            <p>Clientes Cadastrados</p>
-         </div> */}
-         {/* aqui vai ser um map se a class active estiver no paragrafo acima */}
           <tr>
             <th>Cliente</th>
+            <th>Telefone Cliente</th>
             <th>Preço Cobrado</th>
-            <th>Data</th>
             <th>Ações</th>
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <td>João Marcos Martins Rosa</td>
-            <td><span>R$ </span>395.78</td>
-            <td>18/02/2023</td>
+        {pedido && pedido.map((pedido, index) => (
+          pedido.uid === uid && (
+          <tr key={pedido.id} className={index % 2 === 0 ? '' : style.tr2}>
+            <td>{pedido.nomeCliente}</td>
+            <td>{pedido.telefoneCliente}</td>
+            <td><span>R$ </span>{pedido.preçoFinalPedido}</td>
             <td><Link to='detalhes'>Detalhes</Link> / <Link>Apagar</Link></td>
           </tr>
+        )
+        ))}
         </tbody>
       </table>
       
