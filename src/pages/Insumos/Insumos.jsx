@@ -5,12 +5,14 @@ import { useAuthValue } from '../../context/authContext'
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useDocuments } from '../../hooks/useDocuments'
+import { useDeleteDocument } from '../../hooks/useDeleteDocument'
 
 const Insumos = () => {
   const [ modal, setModal ] = useState(false)
   const { user } = useAuthValue()
   const uid = user.uid
   const { documents: produtos, loading, error } = useDocuments('produtos')
+  const { deleteDocument } = useDeleteDocument('produtos')
 
   return (
     <div className={style.compras}>
@@ -47,7 +49,7 @@ const Insumos = () => {
             <td>{produto.pesoEmbalagem} <span>{produto.unidadeMedida}</span></td>
             <td>{produto.estoque} <span>{produto.unidadeMedida}</span></td>
             <td><span>R$ </span>{produto.preçoCompra}</td>
-            <td><Link to='detalhes'>Detalhes</Link> / <Link>Apagar</Link></td>
+            <td><Link to='detalhes'>Detalhes</Link> / <Link onClick={() => deleteDocument(produto.id)}>Apagar</Link></td>
             </tr>
           )
           ))}

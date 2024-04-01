@@ -2,6 +2,7 @@ import React from 'react'
 import style from './Pedidos.module.css'
 import { useAuthValue } from '../../context/authContext'
 import { useDocuments } from '../../hooks/useDocuments'
+import { useDeleteDocument } from '../../hooks/useDeleteDocument'
 import { Link } from 'react-router-dom'
 
 const Pedidos = () => {
@@ -9,6 +10,7 @@ const Pedidos = () => {
 const { user } = useAuthValue()
 const uid = user.uid
 const { documents: pedido, loading, error } = useDocuments('pedidos')
+const { deleteDocument } = useDeleteDocument('pedidos')
 
   return (
     <div className={style.pedidos}>
@@ -39,7 +41,7 @@ const { documents: pedido, loading, error } = useDocuments('pedidos')
             <td>{pedido.nomeCliente}</td>
             <td>{pedido.telefoneCliente}</td>
             <td><span>R$ </span>{pedido.preçoFinalPedido}</td>
-            <td><Link to='detalhes'>Detalhes</Link> / <Link>Apagar</Link></td>
+            <td><Link to='detalhes'>Detalhes</Link> / <Link onClick={() => deleteDocument(pedido.id)}>Apagar</Link></td>
           </tr>
         )
         ))}
