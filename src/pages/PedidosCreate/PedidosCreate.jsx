@@ -270,7 +270,7 @@ const PedidosCreate = () => {
 
         insertDocument(orçamentoPedido)
         console.log(response.error)
-        navigate('/')
+        navigate('/pedidos')
     }
 
   return (

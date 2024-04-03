@@ -1,8 +1,23 @@
 import React from 'react'
 import style from './PedidosDetails.module.css'
 import { Link } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
+import { useAuthentication } from '../../hooks/useAuthentication'
+import { useFetchDocument } from '../../hooks/useFetchDocument'
+import { useUpdateDocument } from '../../hooks/useUpdateDocument'
+import { useEffect } from 'react'
+import { useAuthValue } from '../../context/authContext'
 
 const PedidosDetails = () => {
+
+const { id } = useParams()
+const { user } = useAuthValue()
+const { document: pedidos } = useFetchDocument('pedidos', id)
+const { loading, error } = useAuthentication
+const { updateDocument, response } = useUpdateDocument('pedidos')
+const navigate = useNavigate()
+
+
   return (
     <div className={style.pedidos}>
       <div className={style.pedidos_head}>
@@ -14,22 +29,26 @@ const PedidosDetails = () => {
                 <div className={style.form}>
                     <h3>Detalhes do Cliente</h3><br/>
                     <form>
-                        <label>
-                            <span>Nome do Cliente</span>
-                            <input type="text"className={style.input_form}/>
-                        </label>
-                        <label>
-                            <span>Telefone</span>
-                            <input type="text" className={style.input_form} placeholder='Insumo'/>
-                        </label>
-                        <label>
-                            <span>E-mail</span>
-                            <input type="text" className={style.input_form}/>
-                        </label><br/>
-                        <label>
-                            <span>Descrição do pedido</span>
-                            <input type="text" className={style.input_form}/>
-                        </label>
+                        {pedidos &&
+                        <>
+                            <label>
+                                <span>Nome do Cliente</span>
+                                <input type="text"className={style.input_form} defaultValue={pedidos.nomeCliente}/>
+                            </label>
+                            <label>
+                                <span>Telefone</span>
+                                <input type="text" className={style.input_form} placeholder='Insumo' defaultValue={pedidos.telefoneCliente}/>
+                            </label>
+                            <label><br/>
+                                <span>E-mail</span>
+                                <input type="text" className={style.input_form} defaultValue={pedidos.emailCliente}/>
+                            </label><br/>
+                            <label>
+                                <span>Descrição do pedido</span>
+                                <input type="text" className={style.input_form} defaultValue={pedidos.descricaoPedido}/>
+                            </label>
+                        </>
+                        }
                     </form>
                 </div>
             </div>

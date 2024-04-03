@@ -48,10 +48,10 @@ function App() {
               <Route path='/criar' element={!user ? <CreateAccount/> : <Navigate to='/'/>} />
               <Route path='/login' element={!user ? <Login/> : <Navigate to='/'/>} />
               <Route path='/insumos' element={user ? <Insumos/> : <Navigate to='/login'/>}/>
-              <Route path='/insumos/detalhes' element={user ? <InsumosDetails/> : <Navigate to='/login'/>}/>
+              <Route path='/insumos/detalhes/:id' element={user ? <InsumosDetails/> : <Navigate to='/login'/>}/>
               <Route path='/pedidos' element={user ? <Pedidos/> : <Navigate to='/login'/>}/>
               <Route path='/pedidos/criar' element={user ? <PedidosCreate/> : <Navigate to='/login'/>}/>
-              <Route path='/pedidos/detalhes' element={user ? <PedidosDetails/> : <Navigate to='/login'/>}/>
+              <Route path='/pedidos/detalhes/:id' element={user ? <PedidosDetails/> : <Navigate to='/login'/>}/>
             </Routes>
           </div>
         </BrowserRouter>

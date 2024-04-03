@@ -41,7 +41,7 @@ const { deleteDocument } = useDeleteDocument('pedidos')
             <td>{pedido.nomeCliente}</td>
             <td>{pedido.telefoneCliente}</td>
             <td><span>R$ </span>{pedido.preçoFinalPedido}</td>
-            <td><Link to='detalhes'>Detalhes</Link> / <Link onClick={() => deleteDocument(pedido.id)}>Apagar</Link></td>
+            <td><Link to={`/pedidos/detalhes/${pedido.id}`}>Detalhes</Link> / <Link onClick={() => deleteDocument(pedido.id)}>Apagar</Link></td>
           </tr>
         )
         ))}

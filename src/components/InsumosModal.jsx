@@ -36,7 +36,7 @@ const InsumosModal = ({modal, setModal}) => {
         
         console.log(response.error)
 
-        navigate('/')
+        navigate('/insumos')
     }
 
     if(modal){

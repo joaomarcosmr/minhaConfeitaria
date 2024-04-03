@@ -49,7 +49,7 @@ const Insumos = () => {
             <td>{produto.pesoEmbalagem} <span>{produto.unidadeMedida}</span></td>
             <td>{produto.estoque} <span>{produto.unidadeMedida}</span></td>
             <td><span>R$ </span>{produto.preçoCompra}</td>
-            <td><Link to='detalhes'>Detalhes</Link> / <Link onClick={() => deleteDocument(produto.id)}>Apagar</Link></td>
+            <td><Link to={`/insumos/detalhes/${produto.id}`}>Detalhes</Link> / <Link onClick={() => deleteDocument(produto.id)}>Apagar</Link></td>
             </tr>
           )
           ))}
