@@ -5,7 +5,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { useAuthentication } from '../../hooks/useAuthentication'
 import { useFetchDocument } from '../../hooks/useFetchDocument'
 import { useUpdateDocument } from '../../hooks/useUpdateDocument'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useAuthValue } from '../../context/authContext'
 
 const PedidosDetails = () => {
@@ -16,7 +16,6 @@ const { document: pedidos } = useFetchDocument('pedidos', id)
 const { loading, error } = useAuthentication
 const { updateDocument, response } = useUpdateDocument('pedidos')
 const navigate = useNavigate()
-
 
   return (
     <div className={style.pedidos}>
@@ -33,19 +32,19 @@ const navigate = useNavigate()
                         <>
                             <label>
                                 <span>Nome do Cliente</span>
-                                <input type="text"className={style.input_form} defaultValue={pedidos.nomeCliente}/>
+                                <input type="text"className={style.input_form} disabled defaultValue={pedidos.nomeCliente}/>
                             </label>
                             <label>
                                 <span>Telefone</span>
-                                <input type="text" className={style.input_form} placeholder='Insumo' defaultValue={pedidos.telefoneCliente}/>
+                                <input type="text" className={style.input_form} disabled placeholder='Insumo' defaultValue={pedidos.telefoneCliente}/>
                             </label>
                             <label><br/>
                                 <span>E-mail</span>
-                                <input type="text" className={style.input_form} defaultValue={pedidos.emailCliente}/>
+                                <input type="text" className={style.input_form} disabled defaultValue={pedidos.emailCliente}/>
                             </label><br/>
                             <label>
                                 <span>Descrição do pedido</span>
-                                <input type="text" className={style.input_form} defaultValue={pedidos.descricaoPedido}/>
+                                <input type="text" className={style.input_form} disabled defaultValue={pedidos.descricaoPedido}/>
                             </label>
                         </>
                         }
@@ -66,33 +65,21 @@ const navigate = useNavigate()
                                 </tr>
                             </thead>
                             <tbody>
-                                {/* DA PRA FAZER UM MAP COM UMA VARIAVEL QUE AUMENTA CADA VEZ QUE CLICA NO BOTAO, SE ELA AUMENTAR SIGNIFICA UM NOVO TD PRA TABELA */}
-                                <tr>
+                            {pedidos && pedidos.ingredientesDaMassa.map((ingrediente, index) => (
+                                <tr key={index}>
                                     <td>
-                                        <select>
-                                            <option>Óleo de Soja</option>
+                                        <select disabled>
+                                            <option>{ingrediente.produto}</option>
                                         </select>
                                     </td>
                                     <td>
-                                        <input type="number" />
+                                        <input type="number" disabled defaultValue={ingrediente.quantidade}/>
                                     </td>
                                     <td>
-                                        <span>R$ </span>395.78
+                                        <span disabled>R$ {ingrediente.preçoDeCustoReceita}</span>
                                     </td>
                                 </tr>
-                                <tr>
-                                    <td>
-                                        <select>
-                                            <option>Óleo de Soja</option>
-                                        </select>
-                                    </td>
-                                    <td>
-                                        <input type="number" />
-                                    </td>
-                                    <td>
-                                        <span>R$ </span>395.78
-                                    </td>
-                                </tr>
+                            ))}
                             </tbody>
                         </table>
                 </div>
@@ -111,33 +98,25 @@ const navigate = useNavigate()
                                 </tr>
                             </thead>
                             <tbody>
-                                {/* DA PRA FAZER UM MAP COM UMA VARIAVEL QUE AUMENTA CADA VEZ QUE CLICA NO BOTAO, SE ELA AUMENTAR SIGNIFICA UM NOVO TD PRA TABELA */}
-                                <tr>
-                                    <td>
-                                        <select>
-                                            <option>Óleo de Soja</option>
-                                        </select>
-                                    </td>
-                                    <td>
-                                        <input type="number" />
-                                    </td>
-                                    <td>
-                                        <span>R$ </span>395.78
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <select>
-                                            <option>Óleo de Soja</option>
-                                        </select>
-                                    </td>
-                                    <td>
-                                        <input type="number" />
-                                    </td>
-                                    <td>
-                                        <span>R$ </span>395.78
-                                    </td>
-                                </tr>
+                            {pedidos && pedidos.length > 0 ? (pedidos.ingredientesDoRecheio.map((ingrediente, index) => (
+                                <tr key={index}>
+                                <td>
+                                    <select disabled>
+                                        <option>{ingrediente.produto}</option>
+                                    </select>
+                                </td>
+                                <td>
+                                    <input type="number" disabled defaultValue={ingrediente.quantidade}/>
+                                </td>
+                                <td>
+                                    <span disabled>R$ {ingrediente.preçoDeCustoReceita}</span>
+                                </td>
+                            </tr>
+                            ))) : (
+                                <div className={style.produtos_nao_cadastrados}>
+                                    <span>Não foram cadastrados ingredientes nessa sessão</span>
+                                </div>
+                            )}
                             </tbody>
                         </table>
                 </div>
@@ -156,33 +135,25 @@ const navigate = useNavigate()
                                 </tr>
                             </thead>
                             <tbody>
-                                {/* DA PRA FAZER UM MAP COM UMA VARIAVEL QUE AUMENTA CADA VEZ QUE CLICA NO BOTAO, SE ELA AUMENTAR SIGNIFICA UM NOVO TD PRA TABELA */}
-                                <tr>
-                                    <td>
-                                        <select>
-                                            <option>Óleo de Soja</option>
-                                        </select>
-                                    </td>
-                                    <td>
-                                        <input type="number" />
-                                    </td>
-                                    <td>
-                                        <span>R$ </span>395.78
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <select>
-                                            <option>Óleo de Soja</option>
-                                        </select>
-                                    </td>
-                                    <td>
-                                        <input type="number" />
-                                    </td>
-                                    <td>
-                                        <span>R$ </span>395.78
-                                    </td>
-                                </tr>
+                            {pedidos && pedidos.length > 0 ? (pedidos.ingredientesDaCobertura.map((ingrediente, index) => (
+                                <tr key={index}>
+                                <td>
+                                    <select disabled>
+                                        <option>{ingrediente.produto}</option>
+                                    </select>
+                                </td>
+                                <td>
+                                    <input type="number" disabled defaultValue={ingrediente.quantidade}/>
+                                </td>
+                                <td>
+                                    <span disabled>R$ {ingrediente.preçoDeCustoReceita}</span>
+                                </td>
+                            </tr>
+                            ))) : (
+                                <div className={style.produtos_nao_cadastrados}>
+                                    <span>Não foram cadastrados ingredientes nessa sessão</span>
+                                </div>
+                            )}
                             </tbody>
                         </table>
                 </div>
@@ -193,22 +164,26 @@ const navigate = useNavigate()
                 <div className={style.form}>
                     <h3>Detalhes Finais</h3><br/>
                     <form>
+                    {pedidos &&
+                    <>
                         <label>
                             <span>Preço Cobrado</span>
-                            <input type="text"className={style.input_form}/>
+                            <input type="text"className={style.input_form} disabled defaultValue={pedidos.preçoFinalPedido}/>
                         </label>
                         <label>
-                            <span>Lucro Total</span>
-                            <input type="text" className={style.input_form} placeholder='Insumo'/>
+                            <span>Preço Frete</span> 
+                            <input type="text" className={style.input_form} placeholder='Insumo' disabled defaultValue={pedidos.preçoFinalPedido}/>
                         </label>
-                        <label>
-                            <span>E-mail</span>
-                            <input type="text" className={style.input_form}/>
+                        <label><br/>
+                            <span>Preço Mão de Obra</span>
+                            <input type="text" className={style.input_form} disabled defaultValue={pedidos.preçoFinalPedido}/>
                         </label><br/>
                         <label>
-                            <span>Descrição do pedido</span>
-                            <input type="text" className={style.input_form}/>
+                            <span>Lucro Total</span>
+                            <input type="text" className={style.input_form} disabled defaultValue={pedidos.preçoFinalPedido}/>
                         </label>
+                    </>
+                    }
                     </form>
                 </div>
             </div>
