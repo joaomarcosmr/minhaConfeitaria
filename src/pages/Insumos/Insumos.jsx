@@ -36,7 +36,7 @@ const Insumos = () => {
           <tr>
             <th>Produto</th>
             <th>Peso Embalagem</th>
-            <th>Estoque em Peso</th>
+            <th>Estoque Atual</th>
             <th>Último Preço de Custo</th>
             <th>Ações</th>
           </tr>
@@ -47,7 +47,7 @@ const Insumos = () => {
             <tr key={produto.id} className={index % 2 === 0 ? '' : style.tr2}>
             <td>{produto.produto}</td>
             <td>{produto.pesoEmbalagem} <span>{produto.unidadeMedida}</span></td>
-            <td>{produto.estoque} <span>{produto.unidadeMedida}</span></td>
+            <td>{produto.estoque}</td>
             <td><span>R$ </span>{produto.preçoCompra}</td>
             <td><Link to={`/insumos/detalhes/${produto.id}`}>Detalhes</Link> / <Link onClick={() => deleteDocument(produto.id)}>Apagar</Link></td>
             </tr>

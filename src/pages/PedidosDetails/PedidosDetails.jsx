@@ -172,15 +172,15 @@ const navigate = useNavigate()
                         </label>
                         <label>
                             <span>Preço Frete</span> 
-                            <input type="text" className={style.input_form} placeholder='Insumo' disabled defaultValue={pedidos.preçoFinalPedido}/>
+                            <input type="text" className={style.input_form} placeholder='Insumo' disabled defaultValue={pedidos.custoFrete}/>
                         </label>
                         <label><br/>
-                            <span>Preço Mão de Obra</span>
-                            <input type="text" className={style.input_form} disabled defaultValue={pedidos.preçoFinalPedido}/>
+                            <span>Porcentagem da Mão de Obra</span>
+                            <input type="text" className={style.input_form} disabled defaultValue={pedidos.preçoDeCustoMaoDeObra + "%"}/>
                         </label><br/>
                         <label>
                             <span>Lucro Total</span>
-                            <input type="text" className={style.input_form} disabled defaultValue={pedidos.preçoFinalPedido}/>
+                            <input type="text" className={style.input_form} disabled defaultValue={(pedidos.preçoFinalPedido - pedidos.preçoDeCustoPedido)}/>
                         </label>
                     </>
                     }

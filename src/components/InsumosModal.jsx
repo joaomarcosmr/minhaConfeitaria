@@ -8,28 +8,24 @@ import { useCreateProduct } from '../hooks/useCreateProduct'
 
 const InsumosModal = ({modal, setModal}) => {
     const [produto, setProduto] = useState('')
-    const [tipoProduto, setTipoProduto] = useState('')
-    const [pesoEmbalagem, setPesoEmbalagem] = useState('')
-    const [unidadeMedida, setUnidadeMedida] = useState('')
-    const [preçoCompra, setPreçoCompra] = useState('')
-    const [preçoMedio, setPreçoMedio] = useState('')
-    const [estoque, setEstoque] = useState('')
+    const [pesoEmbalagem, setPesoEmbalagem] = useState(0)
+    const [unidadeMedida, setUnidadeMedida] = useState('G')
+    const [preçoCompra, setPreçoCompra] = useState(0)
+    const [estoque, setEstoque] = useState(0)
     const { user } = useAuthValue()
     const { insertDocument, response } = useCreateProduct('produtos')
     const navigate = useNavigate()
 
     const handleSubmit = async(e) => {
-        e.preventDefault()     
-
+        e.preventDefault()
 
         insertDocument({
             produto,
-            tipoProduto,
-            pesoEmbalagem,
             unidadeMedida,
-            preçoCompra,
-            preçoMedio,
             estoque,
+            pesoEmbalagem,
+            preçoCompra: (preçoCompra).toFixed(2),
+            preçoEstoque: pesoEmbalagem * estoque,
             uid: user.uid,
             createdBy: user.displayName
         })
@@ -42,7 +38,6 @@ const InsumosModal = ({modal, setModal}) => {
     if(modal){
         return (
             <div className={style.InsumosModal_background}>
-                {/* <div className={style.overlay} onClick={()=>setModal(!modal)}></div> */}
                 <div className={style.InsumosModal_content}>
                     <div className={style.insumos_title}>
                         <h3>Cadastrar Insumo</h3>
@@ -53,56 +48,43 @@ const InsumosModal = ({modal, setModal}) => {
                             <span>Nome do Produto</span>
                             <input 
                                 type="text"
-                                className={style.input_form} 
+                                className={style.input_form}
+                                placeholder='Ex: Leite Condensado Italac'
                                 onChange={(e) => setProduto(e.target.value)}
                             />
                         </label>
                         <label>
-                            <span>Tipo de Produto</span><br/>
-                                <select onChange={setTipoProduto}>
-                                    <option value="insumo">Insumo para Produção</option>
-                                    <option value="embalagem">Embalagem para Entrega</option>
+                            <span>Unidade de Medida do Peso</span><br/>
+                                <select onChange={(e) => setUnidadeMedida(e.target.value)} defaultValue="">
+                                    <option value="G">Gramas</option>
+                                    <option value="ML">Mililitros</option>
                                 </select>
+                        </label><br/>
+                        <label>
+                            <span>Quantidade Comprada</span><br/>
+                            <input 
+                                type="number" 
+                                className={style.input_form} 
+                                placeholder='Ex: Se você comprou 5 leites, insira 5'
+                                onChange={(e) => setEstoque(e.target.value)}
+                            />
                         </label><br/>
                         <label>
                             <span>Peso da Embalagem</span>
                             <input 
-                                type="text" 
+                                type="number" 
                                 className={style.input_form} 
-                                placeholder='Se for em KG/L converta para G/ML'
+                                placeholder='Ex: Se você comprou 5 leites, insira o peso de 1 leite'
                                 onChange={(e) => setPesoEmbalagem(e.target.value)}
                             />
                         </label>
-                        <label>
-                            <span>Unidade de Medida do Peso</span><br/>
-                                <select onChange={setUnidadeMedida}>
-                                    <option value="gramas">Gramas</option>
-                                    <option value="mililitros">Mililitros</option>
-                                </select>
-                        </label><br/>
                         <label>
                             <span>Último Preço de Compra</span>
                             <input 
                                 type="text"
                                 className={style.input_form}
-                                onChange={(e) => setPreçoCompra(e.target.value)}
-                            />
-                        </label>
-                        <label>
-                            <span>Preço Médio por Unidade de Medida</span>
-                            <input 
-                                type="text" 
-                                className={style.input_form}
-                                onChange={(e) => setPreçoMedio(e.target.value)}
-                            />
-                        </label>
-                        <label>
-                            <span>Estoque Atual Baseado no Peso</span>
-                            <input 
-                                type="text" 
-                                className={style.input_form} 
-                                placeholder='10.4 UND'
-                                onChange={(e) => setEstoque(e.target.value)}
+                                placeholder='Ex: 3.99 - Utilize o Ponto ao invés da vírgula'
+                                onChange={(e) => setPreçoCompra(Number(e.target.value))}
                             />
                         </label>
                         {!response.loading && <button className='btn'>Cadastrar</button>}

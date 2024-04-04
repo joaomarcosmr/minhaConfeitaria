@@ -96,7 +96,7 @@ const PedidosCreate = () => {
                     preçoDeCustoReceita: preçoPorInsumo,
                     salvo: true,
             };
-    
+
             setEditando(false)
             setIngredienteMassa(updatedIngredienteMassa)
             setIdMassa(idMassa + 1)
@@ -235,14 +235,14 @@ const PedidosCreate = () => {
             somaPreços += Number(ingredienteMassa[i].preçoDeCustoReceita)
         }
         for(let i = 0; i < ingredienteRecheio.length; i++){
-            somaPreços += Number(ingredienteMassa[i].preçoDeCustoReceita)
+            somaPreços += Number(ingredienteRecheio[i].preçoDeCustoReceita)
         }
         for(let i = 0; i < ingredienteCobertura.length; i++){
-            somaPreços += Number(ingredienteMassa[i].preçoDeCustoReceita)
+            somaPreços += Number(ingredienteCobertura[i].preçoDeCustoReceita)
         }
 
-        const preçoCustoObra = somaPreços + Number(custoEmbalagem);
-        const preçoVendaObra = Math.ceil((preçoCustoObra) * (maoDeObra/100 + 1) + Number(custoFrete)) - 0.1
+        const preçoCustoObra = (somaPreços + Number(custoEmbalagem)).toFixed(2);
+        const preçoVendaObra = (Math.ceil((preçoCustoObra) * (maoDeObra/100 + 1) + Number(custoFrete)) - 0.1).toFixed(2);
 
         setCustoObra(preçoCustoObra)
         setCustoFinal(preçoVendaObra)
@@ -261,6 +261,7 @@ const PedidosCreate = () => {
             ingredientesDaMassa: ingredienteMassa,
             ingredientesDoRecheio: ingredienteRecheio,
             ingredientesDaCobertura: ingredienteCobertura,
+            preçoFrete: custoFrete,
             preçoDeCustoPedido: custoObra,
             preçoDeCustoMaoDeObra: maoDeObra,
             preçoFinalPedido: custoFinal,
@@ -268,9 +269,29 @@ const PedidosCreate = () => {
             createdBy: user.displayName
         }
 
-        insertDocument(orçamentoPedido)
-        console.log(response.error)
-        navigate('/pedidos')
+        for(let i = 0; i < ingredienteMassa.length; i++){
+            const produtoEstoqueAlterar = produtos.find(produto => {
+                return ingredienteMassa[i].produto === produto.produto
+            })
+            
+            // posos fazer um for que a cada vez que verifica o valor colocado, se for maior que a embalagem pega o valor utilizado, diminui pela embalagem e tira 1 do estoque
+            // e depois diminui do valor utilizado o valor da embalagem até ficar == 0, ou no caso meia embalagem ou sobrar algum ingrediente
+            // temq  fazer pelo hook update document, pegar o id do documento e passar
+            
+            let pesoAuxiliar = ingredienteMassa[i].quantidade
+            console.log(pesoAuxiliar)
+                if(pesoAuxiliar > produtoEstoqueAlterar.pesoEmbalagem){
+                    console.log(produtoEstoqueAlterar.estoque)
+                    produtoEstoqueAlterar.estoque--;
+                    console.log(produtoEstoqueAlterar.estoque)
+                    pesoAuxiliar - produtoEstoqueAlterar.pesoEmbalagem
+                }
+            console.log(pesoAuxiliar)
+        }
+
+        // insertDocument(orçamentoPedido)
+        // console.log(response.error)
+        // navigate('/pedidos')
     }
 
   return (
